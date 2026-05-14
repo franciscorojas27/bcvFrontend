@@ -2,7 +2,7 @@ FROM node:22-slim AS builder
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml* ./
-RUN corepack enable && corepack prepare pnpm@latest --activate && pnpm install
+RUN corepack enable && corepack prepare pnpm@latest --activate && pnpm approve-builds --all || true && pnpm install
 
 COPY . .
 RUN pnpm run build
@@ -19,6 +19,7 @@ ENV PORT=4321
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/node_modules ./node_modules
 
 EXPOSE 4321
 
