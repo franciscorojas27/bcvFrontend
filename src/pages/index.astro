@@ -1,11 +1,19 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import PriceTable from "../components/PriceTable";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const baseUrl = import.meta.env.BCV_BACKEND_URL;
+let rates = { list: [], bcv_date: "" };
+
+if (baseUrl) {
+  const url = `${baseUrl}/rates`;
+  const res = await fetch(url, { cache: "no-store" });
+  rates = res.ok ? await res.json() : { list: [], bcv_date: "" };
+}
 ---
 
 <Layout>
-	<Welcome />
+  <div class="flex flex-1 items-center justify-center px-6 py-10">
+    <PriceTable rates={rates} client:load />
+  </div>
 </Layout>

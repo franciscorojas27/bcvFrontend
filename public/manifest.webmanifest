@@ -1,0 +1,16 @@
+{
+  "name": "BCV Prices",
+  "short_name": "BCV",
+  "description": "Tasas BCV en tiempo real",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
