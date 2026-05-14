@@ -1,13 +1,14 @@
 FROM node:22-slim AS builder
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml* ./
-RUN corepack enable && corepack prepare pnpm@latest --activate && pnpm approve-builds --all || true && pnpm install
+COPY package.json package-lock.json* ./
+RUN if [ -f package-lock.json ] ; then npm ci ; else npm install ; fi
 
 COPY . .
-RUN pnpm run build
+RUN npm run build
 
-RUN pnpm prune --prod
+# remove devDependencies to keep only production deps
+RUN npm prune --production
 
 FROM node:22-slim AS runner
 WORKDIR /app
