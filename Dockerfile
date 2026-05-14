@@ -1,9 +1,9 @@
 FROM node:22-slim AS builder
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
+COPY package.json ./
 
-RUN npm ci --include=optional --platform=linux --arch=x64
+RUN npm install --include=optional --platform=linux --arch=x64
 
 COPY . .
 
