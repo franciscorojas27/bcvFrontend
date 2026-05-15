@@ -2,22 +2,22 @@
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
 
 :root {
-	--background: #0a0b0f;
-	--foreground: #e6ebf5;
-	--foreground-muted: #a3adc2;
-	--foreground-subtle: #737f97;
-	--surface: #12151d;
-	--surface-muted: #181c26;
-	--surface-strong: #0f1219;
-	--border: #262c3a;
-	--border-strong: #31394b;
-	--accent: #2dd4bf;
-	--accent-strong: #57e7d4;
-	--accent-soft: #133a38;
-	--accent-contrast: #021211;
-	--shadow-strong: 0 26px 60px rgba(0, 0, 0, 0.45);
-	--shadow-soft: 0 14px 35px rgba(0, 0, 0, 0.3);
-	--ring: rgba(45, 212, 191, 0.2);
+	--background: #050505;
+	--foreground: #ececec;
+	--foreground-muted: #b1b1b1;
+	--foreground-subtle: #7f7f7f;
+	--surface: #0d0d0d;
+	--surface-muted: #121212;
+	--surface-strong: #080808;
+	--border: #232323;
+	--border-strong: #303030;
+	--accent: #d4d4d4;
+	--accent-strong: #ffffff;
+	--accent-soft: #1b1b1b;
+	--accent-contrast: #050505;
+	--shadow-strong: 0 26px 60px rgba(0, 0, 0, 0.55);
+	--shadow-soft: 0 14px 35px rgba(0, 0, 0, 0.38);
+	--ring: rgba(255, 255, 255, 0.14);
 }
 
 @theme inline {

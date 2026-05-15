@@ -34,7 +34,7 @@ export default function CalculatorLauncher({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="group fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--surface-strong)] text-[color:var(--foreground)] shadow-[0_10px_24px_rgba(0,0,0,0.32)] transition duration-200 hover:border-[color:var(--accent)] hover:shadow-[0_14px_30px_rgba(0,0,0,0.42)]"
+        className="group fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--surface-strong)] text-[color:var(--foreground)] shadow-[0_10px_24px_rgba(0,0,0,0.42)] transition duration-200 hover:border-[color:var(--border-strong)] hover:bg-[color:var(--surface)] hover:shadow-[0_14px_30px_rgba(0,0,0,0.5)]"
         aria-label="Abrir calculadora"
       >
         <span className="text-xl leading-none text-[color:var(--accent-strong)] transition group-hover:scale-110">
@@ -43,7 +43,7 @@ export default function CalculatorLauncher({
       </button>
 
       {open ? (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/72 p-4 sm:items-center sm:p-6">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/88 p-4 sm:items-center sm:p-6">
           <button
             type="button"
             className="absolute inset-0 z-0 cursor-default"
