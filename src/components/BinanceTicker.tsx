@@ -47,11 +47,11 @@ export default function BinanceTicker() {
           <div className="flex gap-6">
             <div>
               <div className="text-xs text-gray-500">Buy</div>
-              <div className="font-mono text-lg">{data?.sellPrice ?? "—"}</div>
+              <div className="font-mono text-lg">{data?.buyPrice ?? "—"}</div>
             </div>
             <div>
               <div className="text-xs text-gray-500">Sell</div>
-              <div className="font-mono text-lg">{data?.buyPrice ?? "—"}</div>
+              <div className="font-mono text-lg">{data?.sellPrice ?? "—"}</div>
             </div>
           </div>
           <div className="text-xs text-gray-400">{lastUpdated ?? "—"}</div>
