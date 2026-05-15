@@ -8,6 +8,10 @@ interface BinanceData {
   sellPrice: string;
 }
 
+const moneyFormatter = new Intl.NumberFormat("es-VE", {
+  maximumFractionDigits: 6,
+});
+
 const parsePrice = (value: string) => Number(value.replace(/,/g, ""));
 const formatNumber = (value: number, maximumFractionDigits = 6) =>
   new Intl.NumberFormat("es-VE", { maximumFractionDigits }).format(value);
@@ -35,6 +39,12 @@ const dateFormatter = new Intl.DateTimeFormat("es-VE", {
 
 const quickAmounts = ["10", "50", "100", "500", "1000"];
 
+const currencyLabels: Record<string, string> = {
+  VES: "Bolívares",
+  USDT: "USDT",
+  USD: "Dólares",
+};
+
 const formatUpdatedAt = (value: string) => {
   if (!value) return "Sin fecha";
   const date = new Date(value);
@@ -45,28 +55,40 @@ const formatUpdatedAt = (value: string) => {
 export default function CurrencyCalculator({
   rates,
   binance,
+  onClose,
 }: {
   rates: RateList;
   binance: BinanceData | null;
+  onClose?: () => void;
 }) {
   const symbols = useMemo(
     () => rates.list.map((rate) => rate.symbol).sort(),
     [rates.list],
   );
 
-  const preferredSymbol = symbols.includes("USD") ? "USD" : symbols[0] ?? "";
+  const preferredSymbol = symbols.includes("USD") ? "USD" : symbols[0] ?? "VES";
   const [source, setSource] = useState<RateSource>("bcv");
-  const [symbol, setSymbol] = useState(preferredSymbol);
+  const [fromCurrency, setFromCurrency] = useState(preferredSymbol);
+  const [toCurrency, setToCurrency] = useState("VES");
   const [sourceAmount, setSourceAmount] = useState("1");
-  const [vesAmount, setVesAmount] = useState("");
-  const [lastEdited, setLastEdited] = useState<"source" | "ves">("source");
   const hasBinance = Boolean(binance?.buyPrice && binance?.sellPrice);
 
-  useEffect(() => {
-    if (!symbol && symbols.length) {
-      setSymbol(preferredSymbol);
+  const currencyOptions = useMemo(() => {
+    if (source === "bcv") {
+      return ["VES", ...symbols];
     }
-  }, [preferredSymbol, symbol, symbols]);
+
+    return ["VES", "USDT"];
+  }, [source, symbols]);
+
+  useEffect(() => {
+    if (!currencyOptions.includes(fromCurrency)) {
+      setFromCurrency(source === "bcv" ? preferredSymbol : "USDT");
+    }
+    if (!currencyOptions.includes(toCurrency)) {
+      setToCurrency("VES");
+    }
+  }, [currencyOptions, fromCurrency, preferredSymbol, source, toCurrency]);
 
   useEffect(() => {
     if (!hasBinance && source !== "bcv") {
@@ -76,167 +98,221 @@ export default function CurrencyCalculator({
 
   const rateMap = useMemo(() => {
     const map = new Map<string, number>();
+    map.set("VES", 1);
+
     rates.list.forEach((rate) => {
       const parsed = parsePrice(rate.price);
       if (Number.isFinite(parsed)) {
         map.set(rate.symbol, parsed);
       }
     });
+
+    if (hasBinance) {
+      const rawValue = source === "binance-buy" ? binance?.buyPrice : binance?.sellPrice;
+      const parsed = rawValue ? parsePrice(rawValue) : Number.NaN;
+      if (Number.isFinite(parsed)) {
+        map.set("USDT", parsed);
+      }
+    }
+
     return map;
-  }, [rates.list]);
+  }, [binance?.buyPrice, binance?.sellPrice, hasBinance, rates.list, source]);
 
-  const binanceRate = useMemo(() => {
-    if (!hasBinance) return null;
-    const value = source === "binance-buy" ? binance?.buyPrice : binance?.sellPrice;
-    if (!value) return null;
-    const parsed = parsePrice(value);
-    return Number.isFinite(parsed) ? parsed : null;
-  }, [binance?.buyPrice, binance?.sellPrice, hasBinance, source]);
-
-  const displaySymbol = source === "bcv" ? symbol : "USDT";
-  const rate =
-    source === "bcv" ? (symbol ? rateMap.get(symbol) ?? null : null) : binanceRate;
   const sourceValue = useMemo(() => parseAmount(sourceAmount), [sourceAmount]);
-  const vesValue = useMemo(() => parseAmount(vesAmount), [vesAmount]);
 
-  const calculatedVes = useMemo(() => {
-    if (!rate || !Number.isFinite(sourceValue)) return null;
-    return sourceValue * rate;
-  }, [rate, sourceValue]);
+  const fromRate = fromCurrency === "VES" ? 1 : rateMap.get(fromCurrency) ?? null;
+  const toRate = toCurrency === "VES" ? 1 : rateMap.get(toCurrency) ?? null;
 
-  const calculatedSource = useMemo(() => {
-    if (!rate || !Number.isFinite(vesValue)) return null;
-    return vesValue / rate;
-  }, [rate, vesValue]);
+  const convertedAmount = useMemo(() => {
+    if (!Number.isFinite(sourceValue) || !fromRate || !toRate) return null;
 
-  const displayedSource =
-    lastEdited === "source"
-      ? sourceAmount
-      : calculatedSource !== null
-        ? formatNumber(calculatedSource)
-        : "";
-  const displayedVes =
-    lastEdited === "ves"
-      ? vesAmount
-      : calculatedVes !== null
-        ? formatNumber(calculatedVes)
-        : "";
+    const sourceInVes = fromCurrency === "VES" ? sourceValue : sourceValue * fromRate;
+    return toCurrency === "VES" ? sourceInVes : sourceInVes / toRate;
+  }, [fromCurrency, fromRate, sourceValue, toCurrency, toRate]);
+
+  const activeSourceRate = fromCurrency === "VES" ? 1 : fromRate;
+  const activeTargetRate = toCurrency === "VES" ? 1 : toRate;
+
+  const exchangeLabel =
+    activeSourceRate && activeTargetRate
+      ? `1 ${fromCurrency} = ${formatNumber(activeSourceRate / activeTargetRate)} ${toCurrency}`
+      : "Selecciona monedas válidas para ver la tasa.";
+
+  const convertedDisplay = convertedAmount !== null ? formatNumber(convertedAmount) : "";
+
+  const swapCurrencies = () => {
+    setFromCurrency(toCurrency);
+    setToCurrency(fromCurrency);
+    if (convertedAmount !== null) {
+      setSourceAmount(moneyFormatter.format(convertedAmount));
+    }
+  };
 
   if (!symbols.length) {
     return (
-      <div className="w-full max-w-5xl rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-8 text-sm text-[color:var(--foreground-muted)] shadow-[var(--shadow-soft)]">
+      <div className="w-full max-w-5xl rounded-[32px] border border-[color:var(--border)] bg-[color:var(--surface)] p-8 text-sm text-[color:var(--foreground-muted)] shadow-[var(--shadow-soft)]">
         No hay datos de tasas disponibles.
       </div>
     );
   }
+
   return (
-    <section className="relative w-full max-w-5xl">
-      <div className="relative overflow-hidden rounded-[32px] border border-[color:var(--border)] bg-[color:var(--surface-strong)] p-6 shadow-[var(--shadow-strong)] sm:p-8">
-        <div className="absolute right-0 top-0 h-52 w-52 -translate-y-1/2 translate-x-1/4 rounded-full bg-[color:var(--accent-soft)] blur-3xl" aria-hidden />
+    <section className="relative w-full max-w-5xl overflow-hidden rounded-[32px] border border-[color:var(--border)] bg-[linear-gradient(180deg,rgba(18,21,29,0.98),rgba(12,15,21,0.98))] p-6 shadow-[var(--shadow-strong)] sm:p-8">
+      <div className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(87,231,212,0.55),transparent)]" aria-hidden />
+      <div className="pointer-events-none absolute right-0 top-0 h-56 w-56 translate-x-1/3 -translate-y-1/3 rounded-full bg-[radial-gradient(circle,_rgba(45,212,191,0.18),_transparent_68%)] blur-2xl" aria-hidden />
+      <div className="pointer-events-none absolute -left-20 bottom-0 h-72 w-72 rounded-full bg-[radial-gradient(circle,_rgba(255,255,255,0.04),_transparent_65%)] blur-3xl" aria-hidden />
 
-        <div className="relative grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-5 sm:p-6">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[color:var(--accent)]">Calculadora BCV</p>
-            <h1 className="mt-3 text-3xl font-[var(--font-display)] leading-tight text-[color:var(--foreground)] sm:text-4xl">Calcula rapido, decide mejor</h1>
-            <p className="mt-3 text-sm text-[color:var(--foreground-muted)]">Escribe un monto en la moneda base o en VES. El otro campo se actualiza al instante.</p>
+      <div className="relative flex items-start justify-between gap-4">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.36em] text-[color:var(--accent)]">Calculadora BCV</p>
+          <h1 className="mt-3 font-[var(--font-display)] text-3xl leading-none text-[color:var(--foreground)] sm:text-4xl">Calcula sin salir del flujo</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-[color:var(--foreground-muted)]">
+            Conviertes entre BCV y Binance con una interfaz limpia, rápida y más cercana a una herramienta real que a un formulario genérico.
+          </p>
+        </div>
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              <div>
-                <label htmlFor="source" className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">Fuente</label>
-                <select
-                  id="source"
-                  value={source}
-                  onChange={(e: ChangeEvent<HTMLSelectElement>) => setSource(e.target.value as RateSource)}
-                  className="mt-2 w-full rounded-xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-3 py-2 text-sm text-[color:var(--foreground)] shadow-sm transition focus:border-[color:var(--accent)] focus:outline-none focus:ring-4 focus:ring-[color:var(--ring)]"
-                >
-                  <option value="bcv">BCV</option>
-                  {hasBinance ? (
-                    <>
-                      <option value="binance-buy">Binance compra</option>
-                      <option value="binance-sell">Binance venta</option>
-                    </>
-                  ) : null}
-                </select>
-              </div>
+        {onClose ? (
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-4 py-2 text-sm font-medium text-[color:var(--foreground-muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--foreground)]"
+          >
+            Cerrar
+          </button>
+        ) : null}
+      </div>
 
-              <div>
-                <label htmlFor="currency" className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">Moneda</label>
-                <select
-                  id="currency"
-                  value={symbol}
-                  onChange={(e: ChangeEvent<HTMLSelectElement>) => setSymbol(e.target.value)}
-                  disabled={source !== "bcv"}
-                  className="mt-2 w-full rounded-xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-3 py-2 text-sm text-[color:var(--foreground)] shadow-sm transition focus:border-[color:var(--accent)] focus:outline-none focus:ring-4 focus:ring-[color:var(--ring)] disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {symbols.map((item) => (
-                    <option key={item} value={item}>{item}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
+      <div className="mt-7 grid gap-4 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
+        <div className="rounded-[28px] border border-[color:var(--border)] bg-[color:var(--surface)] p-5 shadow-[0_18px_42px_rgba(0,0,0,0.22)] sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <label htmlFor="from-amount" className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[color:var(--foreground-subtle)]">
+              De
+            </label>
+            <select
+              value={source}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => setSource(e.target.value as RateSource)}
+              className="rounded-full border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-3 py-2 text-xs font-semibold text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--accent)]"
+            >
+              <option value="bcv">BCV</option>
+              {hasBinance ? <option value="binance-buy">Binance compra</option> : null}
+              {hasBinance ? <option value="binance-sell">Binance venta</option> : null}
+            </select>
+          </div>
 
-            <div className="mt-5">
-              <label htmlFor="source-amount" className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">Monto en {displaySymbol || "--"}</label>
+          <div className="mt-5 grid gap-4 sm:grid-cols-[1.2fr_0.8fr]">
+            <div>
               <input
-                id="source-amount"
+                id="from-amount"
                 type="text"
                 inputMode="decimal"
-                value={displayedSource}
-                placeholder="Ej: 1200,50"
-                onChange={(e: ChangeEvent<HTMLInputElement>) => { setLastEdited("source"); setSourceAmount(e.target.value); }}
-                className="mt-2 w-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-4 py-3 text-xl font-semibold text-[color:var(--foreground)] shadow-sm transition focus:border-[color:var(--accent)] focus:outline-none focus:ring-4 focus:ring-[color:var(--ring)]"
+                value={sourceAmount}
+                placeholder="1,00"
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setSourceAmount(e.target.value)}
+                className="w-full border-0 bg-transparent font-[var(--font-display)] text-4xl leading-none tracking-tight text-[color:var(--foreground)] outline-none placeholder:text-[color:var(--foreground-subtle)]"
               />
+              <p className="mt-3 text-xs text-[color:var(--foreground-subtle)]">Escribe el monto que quieres convertir.</p>
+            </div>
 
-              <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                {quickAmounts.map((v) => (
+            <div>
+              <label htmlFor="from-currency" className="sr-only">
+                Moneda de origen
+              </label>
+              <select
+                id="from-currency"
+                value={fromCurrency}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => setFromCurrency(e.target.value)}
+                className="w-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-4 py-3 text-sm font-semibold text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--accent)]"
+              >
+                {currencyOptions.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {quickAmounts.map((value) => (
                   <button
-                    key={v}
+                    key={value}
                     type="button"
-                    onClick={() => { setLastEdited("source"); setSourceAmount(v); }}
-                    className="rounded-full border border-[color:var(--border-strong)] bg-[color:var(--surface-strong)] px-3 py-1 font-semibold text-[color:var(--foreground-muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent-strong)]"
+                    onClick={() => setSourceAmount(value)}
+                    className="rounded-full border border-[color:var(--border)] bg-[color:var(--surface-strong)] px-3 py-1.5 text-xs font-semibold text-[color:var(--foreground-muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--foreground)]"
                   >
-                    {v}
+                    {value}
                   </button>
                 ))}
               </div>
             </div>
-
-            <div className="mt-5 rounded-2xl border border-dashed border-[color:var(--border)] bg-[color:var(--surface-muted)] p-3 text-xs text-[color:var(--foreground-subtle)]">
-              {!hasBinance ? "Binance no esta disponible en este momento." : source !== "bcv" ? "Binance trabaja con USDT de referencia." : "Puedes alternar entre BCV y Binance cuando Binance este disponible."}
-            </div>
-          </div>
-
-          <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-5 sm:p-6">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[color:var(--foreground-subtle)]">Total en VES</div>
-                <div className="mt-1 text-xs text-[color:var(--foreground-muted)]">Actualizado: {formatUpdatedAt(rates.bcv_date)}</div>
-              </div>
-              <div className="rounded-full border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-3 py-1 text-xs font-semibold text-[color:var(--accent)]">{sourceLabels[source]}</div>
-            </div>
-
-            <input
-              id="ves-amount"
-              type="text"
-              inputMode="decimal"
-              value={displayedVes}
-              placeholder="Ej: 1200,50"
-              onChange={(e: ChangeEvent<HTMLInputElement>) => { setLastEdited("ves"); setVesAmount(e.target.value); }}
-              className="mt-5 w-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-4 py-4 text-3xl font-semibold text-[color:var(--foreground)] shadow-sm transition focus:border-[color:var(--accent)] focus:outline-none focus:ring-4 focus:ring-[color:var(--ring)]"
-              aria-live="polite"
-            />
-
-            <div className="mt-4 rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] p-4">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">Cambio actual</div>
-              <div className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">{rate ? `1 ${displaySymbol} = ${formatNumber(rate)} VES` : "Selecciona una tasa valida para continuar."}</div>
-            </div>
-
-            <div className="mt-4 space-y-2 rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] p-4 text-sm">
-              <div className="flex items-center justify-between text-[color:var(--foreground-subtle)]"><span>Moneda base</span><span className="font-semibold text-[color:var(--foreground)]">{displaySymbol || "-"}</span></div>
-              <div className="flex items-center justify-between text-[color:var(--foreground-subtle)]"><span>Precision</span><span className="font-semibold text-[color:var(--foreground)]">Hasta 6 decimales</span></div>
-            </div>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={swapCurrencies}
+          className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--surface-muted)] text-[color:var(--foreground)] shadow-[0_14px_30px_rgba(0,0,0,0.25)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent-strong)] lg:self-center"
+          aria-label="Intercambiar monedas"
+        >
+          ⇄
+        </button>
+
+        <div className="rounded-[28px] border border-[color:var(--border)] bg-[color:var(--surface)] p-5 shadow-[0_18px_42px_rgba(0,0,0,0.22)] sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[color:var(--foreground-subtle)]">A</p>
+              <p className="mt-1 text-xs text-[color:var(--foreground-muted)]">Resultado estimado</p>
+            </div>
+            <select
+              value={toCurrency}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => setToCurrency(e.target.value)}
+              className="rounded-full border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-3 py-2 text-xs font-semibold text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--accent)]"
+            >
+              {currencyOptions.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mt-5 flex min-h-28 items-end justify-between gap-4 rounded-[24px] border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-5 py-4">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">Monto convertido</p>
+              <div className="mt-3 font-[var(--font-display)] text-4xl leading-none text-[color:var(--foreground)] sm:text-5xl">
+                {convertedDisplay || "--"}
+              </div>
+            </div>
+            <div className="pb-1 text-right text-xs font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">
+              {currencyLabels[toCurrency] ?? toCurrency}
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-[22px] border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-4 py-3">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">Cambio actual</div>
+            <div className="mt-2 text-sm font-medium text-[color:var(--foreground)]">{exchangeLabel}</div>
+          </div>
+
+          <div className="mt-4 flex items-center justify-between gap-3 text-xs text-[color:var(--foreground-subtle)]">
+            <span>Actualizado: {formatUpdatedAt(rates.bcv_date)}</span>
+            <span>{sourceLabels[source]}</span>
+          </div>
+
+          {onClose ? (
+            <div className="mt-5 flex justify-end">
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-full bg-[color:var(--accent)] px-5 py-3 text-sm font-semibold text-[color:var(--accent-contrast)] transition hover:brightness-110"
+              >
+                Listo
+              </button>
+            </div>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="mt-6 rounded-[24px] border border-dashed border-[color:var(--border)] bg-[color:var(--surface-muted)]/70 px-4 py-3 text-xs text-[color:var(--foreground-subtle)]">
+        {hasBinance
+          ? "Puedes alternar entre BCV y Binance sin salir de esta vista."
+          : "Binance no está disponible ahora, pero la calculadora sigue funcionando con BCV."}
       </div>
     </section>
   );

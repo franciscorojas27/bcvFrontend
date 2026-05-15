@@ -1,19 +1,30 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import PriceTable from "../components/PriceTable";
+import CalculatorLauncher from "../components/CalculatorLauncher";
 
 const baseUrl = import.meta.env.BCV_BACKEND_URL;
 let rates = { list: [], bcv_date: "" };
+let binance = null;
 
 if (baseUrl) {
-  const url = `${baseUrl}/rates`;
-  const res = await fetch(url, { cache: "no-store" });
-  rates = res.ok ? await res.json() : { list: [], bcv_date: "" };
+  const [ratesRes, binanceRes] = await Promise.all([
+    fetch(`${baseUrl}/rates`, { cache: "no-store" }),
+    fetch(`${baseUrl}/binance`, { cache: "no-store" }),
+  ]);
+
+  rates = ratesRes.ok ? await ratesRes.json() : { list: [], bcv_date: "" };
+  binance = binanceRes.ok ? await binanceRes.json() : null;
 }
 ---
 
 <Layout>
-  <div class="flex flex-1 items-center justify-center px-6 py-10">
-    <PriceTable rates={rates} client:load />
+  <div class="relative flex flex-1 items-center justify-center overflow-hidden px-6 py-10 sm:py-14">
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[radial-gradient(circle_at_top,_rgba(45,212,191,0.16),_transparent_58%)]" aria-hidden></div>
+    <div class="pointer-events-none absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-[radial-gradient(circle,_rgba(87,231,212,0.14),_transparent_70%)] blur-3xl" aria-hidden></div>
+    <div class="relative z-10 w-full">
+      <PriceTable rates={rates} client:load />
+    </div>
+    <CalculatorLauncher rates={rates} binance={binance} client:load />
   </div>
 </Layout>

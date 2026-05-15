@@ -12,21 +12,22 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/node": "^10.1.1",
+    "@astrojs/node": "10.1.1",
     "@astrojs/react": "5.0.5",
     "@astrojs/ts-plugin": "1.10.8",
     "@tailwindcss/vite": "4.3.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "astro": "6.3.2",
-    "html-to-image": "^1.11.13",
+    "astro-bun": ".",
+    "html-to-image": "1.11.13",
     "react": "19.2.6",
     "react-dom": "19.2.6",
     "tailwindcss": "4.3.0",
-    "tesseract.js": "^7.0.0"
+    "tesseract.js": "7.0.0"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.9",
-    "typescript": "^5.9.3"
+    "@astrojs/check": "0.9.9",
+    "typescript": "5.9.3"
   }
 }
