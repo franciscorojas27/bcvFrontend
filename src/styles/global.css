@@ -2,12 +2,26 @@
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
 
 :root {
-	--background: #f8fafc;
+	--background: #f7f8fb;
 	--foreground: #0f172a;
+	--foreground-muted: #475569;
+	--foreground-subtle: #64748b;
 	--surface: #ffffff;
 	--surface-muted: #f1f5f9;
+	--surface-strong: #e2e8f0;
+	--border: #e2e8f0;
+	--border-strong: #cbd5e1;
 	--accent: #0f766e;
+	--accent-strong: #0ea5a4;
+	--accent-soft: #ccfbf1;
 	--accent-contrast: #ecfeff;
+	--glow-1: rgba(251, 191, 36, 0.35);
+	--glow-2: rgba(45, 212, 191, 0.28);
+	--bg-fade: rgba(255, 255, 255, 0.7);
+	--bg-fade-2: rgba(255, 255, 255, 0);
+	--shadow-strong: 0 26px 60px rgba(15, 23, 42, 0.18);
+	--shadow-soft: 0 14px 35px rgba(15, 23, 42, 0.12);
+	--ring: rgba(13, 148, 136, 0.2);
 }
 
 @theme inline {
@@ -24,20 +38,24 @@
 	:root {
 		--background: #0b0f14;
 		--foreground: #e2e8f0;
+		--foreground-muted: #94a3b8;
+		--foreground-subtle: #64748b;
 		--surface: #0f172a;
 		--surface-muted: #111827;
-		--accent: #14b8a6;
+		--surface-strong: #1f2937;
+		--border: #1f2937;
+		--border-strong: #334155;
+		--accent: #2dd4bf;
+		--accent-strong: #14b8a6;
+		--accent-soft: #0f3d3a;
 		--accent-contrast: #ccfbf1;
-	}
-
-	body {
-		background: radial-gradient(
-			1200px circle at 10% -10%,
-			#1f2937 0%,
-			#0b0f14 45%,
-			#0f172a 75%,
-			#0b0f14 100%
-		);
+		--glow-1: rgba(250, 204, 21, 0.16);
+		--glow-2: rgba(45, 212, 191, 0.18);
+		--bg-fade: rgba(15, 23, 42, 0.55);
+		--bg-fade-2: rgba(2, 6, 23, 0);
+		--shadow-strong: 0 26px 60px rgba(2, 6, 23, 0.6);
+		--shadow-soft: 0 14px 35px rgba(2, 6, 23, 0.45);
+		--ring: rgba(45, 212, 191, 0.25);
 	}
 }
 
@@ -50,14 +68,18 @@ body {
 }
 
 body {
-	background: radial-gradient(
-		1200px circle at 12% -10%,
-		#fff7ed 0%,
-		#f8fafc 45%,
-		#ecfeff 70%,
-		#f8fafc 100%
-	);
+	background-color: var(--background);
+	background-image:
+		radial-gradient(900px circle at 8% -10%, var(--glow-1) 0%, transparent 58%),
+		radial-gradient(800px circle at 95% 0%, var(--glow-2) 0%, transparent 60%),
+		linear-gradient(180deg, var(--bg-fade) 0%, var(--bg-fade-2) 70%);
+	background-attachment: fixed;
 	color: var(--foreground);
 	font-family: var(--font-sans);
 	text-rendering: optimizeLegibility;
+}
+
+::selection {
+	background-color: var(--accent);
+	color: var(--accent-contrast);
 }

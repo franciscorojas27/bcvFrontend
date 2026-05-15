@@ -28,6 +28,18 @@ const sourceLabels: Record<RateSource, string> = {
   "binance-sell": "Binance (venta)",
 };
 
+const dateFormatter = new Intl.DateTimeFormat("es-VE", {
+  dateStyle: "medium",
+  timeStyle: "short",
+});
+
+const formatUpdatedAt = (value: string) => {
+  if (!value) return "Sin fecha";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return dateFormatter.format(date);
+};
+
 export default function CurrencyCalculator({
   rates,
   binance,
@@ -116,100 +128,109 @@ export default function CurrencyCalculator({
     );
   }
   return (
-    <section className="w-full max-w-4xl">
-      <div className="rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur dark:border-slate-800/80 dark:bg-slate-950/80">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700 dark:text-teal-300">Calculadora BCV</p>
-            <h1 className="mt-2 text-3xl font-[var(--font-display)] text-slate-900 sm:text-4xl dark:text-slate-100">Convierte con confianza, en segundos</h1>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Elige la fuente y escribe un monto en la moneda o en VES; el otro campo se calcula automáticamente.</p>
+    <section className="relative w-full max-w-5xl">
+      <div className="relative rounded-[28px] border border-[color:var(--border)] bg-[color:var(--surface)] p-6 shadow-[var(--shadow-strong)] backdrop-blur sm:p-8">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-[color:var(--accent)]">Calculadora BCV</p>
+            <h1 className="mt-3 text-3xl font-[var(--font-display)] text-[color:var(--foreground)] sm:text-4xl">Convierte con confianza, en segundos</h1>
+            <p className="mt-3 text-sm text-[color:var(--foreground-muted)]">Elige la fuente y escribe un monto en la moneda o en VES; el otro campo se calcula automaticamente.</p>
           </div>
-          <div className="rounded-2xl border border-slate-200/70 bg-slate-50 px-4 py-3 text-xs text-slate-600 dark:border-slate-800/70 dark:bg-slate-900/70 dark:text-slate-300">
-            <div className="text-[11px] uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">Actualizado</div>
-            <div className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{rates.bcv_date || "Sin fecha"}</div>
+          <div className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-4 py-3 text-xs text-[color:var(--foreground-muted)] shadow-[var(--shadow-soft)]">
+            <div className="text-[11px] uppercase tracking-[0.3em] text-[color:var(--foreground-subtle)]">Actualizado</div>
+            <div className="mt-1 text-sm font-semibold text-[color:var(--foreground)]">{formatUpdatedAt(rates.bcv_date)}</div>
           </div>
         </div>
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="rounded-2xl border border-slate-200/70 bg-white/90 p-5 shadow-sm dark:border-slate-800/70 dark:bg-slate-950/70">
-            <div className="flex flex-col gap-4">
+        <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+          <div className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] p-5 shadow-[var(--shadow-soft)]">
+            <div className="flex flex-col gap-5">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="source" className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Fuente</label>
+                  <label htmlFor="source" className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">Fuente</label>
                   <select
                     id="source"
                     value={source}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => setSource(e.target.value as RateSource)}
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-100 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-teal-400/20"
+                    className="mt-2 w-full rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] px-3 py-2 text-sm text-[color:var(--foreground)] shadow-sm transition focus:border-[color:var(--accent)] focus:outline-none focus:ring-4 focus:ring-[color:var(--ring)]"
                   >
                     <option value="bcv">BCV</option>
                     {hasBinance ? (
                       <>
-                        <option value="binance-buy">Binance Buy</option>
-                        <option value="binance-sell">Binance Sell</option>
+                        <option value="binance-buy">Binance compra</option>
+                        <option value="binance-sell">Binance venta</option>
                       </>
                     ) : null}
                   </select>
-                  {!hasBinance ? <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Binance no está disponible en este momento.</p> : null}
+                  {!hasBinance ? <p className="mt-2 text-xs text-[color:var(--foreground-subtle)]">Binance no esta disponible en este momento.</p> : null}
                 </div>
 
                 <div>
-                  <label htmlFor="currency" className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Moneda</label>
+                  <label htmlFor="currency" className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">Moneda</label>
                   <select
                     id="currency"
                     value={symbol}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => setSymbol(e.target.value)}
                     disabled={source !== "bcv"}
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-teal-400/20 dark:disabled:bg-slate-900"
+                    className="mt-2 w-full rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] px-3 py-2 text-sm text-[color:var(--foreground)] shadow-sm transition focus:border-[color:var(--accent)] focus:outline-none focus:ring-4 focus:ring-[color:var(--ring)] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {symbols.map((item) => (
                       <option key={item} value={item}>{item}</option>
                     ))}
                   </select>
-                  {source !== "bcv" ? <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Binance trabaja en USDT de referencia.</p> : null}
+                  {source !== "bcv" ? <p className="mt-2 text-xs text-[color:var(--foreground-subtle)]">Binance trabaja con USDT de referencia.</p> : null}
                 </div>
               </div>
 
               <div>
-                <label htmlFor="source-amount" className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Monto en {displaySymbol || "--"}</label>
+                <label htmlFor="source-amount" className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">Monto en {displaySymbol || "--"}</label>
                 <input
                   id="source-amount"
                   type="text"
                   inputMode="decimal"
-                  value={lastEdited === "source" ? sourceAmount : (calculatedSource !== null ? String(calculatedSource) : "")}
+                  value={displayedSource}
                   placeholder="Ej: 1200,50"
                   onChange={(e: ChangeEvent<HTMLInputElement>) => { setLastEdited("source"); setSourceAmount(e.target.value); }}
-                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-lg text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-100 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-teal-400/20"
+                  className="mt-2 w-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 text-lg font-semibold text-[color:var(--foreground)] shadow-sm transition focus:border-[color:var(--accent)] focus:outline-none focus:ring-4 focus:ring-[color:var(--ring)]"
                 />
 
                 <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                  {['10','50','100','500','1000'].map((v) => (
-                    <button key={v} type="button" onClick={() => { setLastEdited('source'); setSourceAmount(v); }} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-semibold text-slate-600 transition hover:border-teal-200 hover:text-teal-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300 dark:hover:border-teal-500/40 dark:hover:text-teal-300">{v}</button>
+                  {["10", "50", "100", "500", "1000"].map((v) => (
+                    <button
+                      key={v}
+                      type="button"
+                      onClick={() => { setLastEdited("source"); setSourceAmount(v); }}
+                      className="rounded-full border border-[color:var(--border)] bg-[color:var(--surface)] px-3 py-1 font-semibold text-[color:var(--foreground-muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent-strong)]"
+                    >
+                      {v}
+                    </button>
                   ))}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200/70 bg-slate-50/80 p-5 shadow-sm dark:border-slate-800/70 dark:bg-slate-900/70">
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Monto en VES</div>
+          <div className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] p-5 shadow-[var(--shadow-soft)]">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">Monto en VES</div>
             <input
               id="ves-amount"
               type="text"
               inputMode="decimal"
-              value={lastEdited === 'ves' ? vesAmount : (calculatedVes !== null ? String(calculatedVes) : '')}
+              value={displayedVes}
               placeholder="Ej: 1200,50"
-              onChange={(e: ChangeEvent<HTMLInputElement>) => { setLastEdited('ves'); setVesAmount(e.target.value); }}
-              className="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-2xl font-semibold text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-100 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-teal-400/20"
+              onChange={(e: ChangeEvent<HTMLInputElement>) => { setLastEdited("ves"); setVesAmount(e.target.value); }}
+              className="mt-3 w-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 text-2xl font-semibold text-[color:var(--foreground)] shadow-sm transition focus:border-[color:var(--accent)] focus:outline-none focus:ring-4 focus:ring-[color:var(--ring)]"
               aria-live="polite"
             />
 
-            <div className="mt-3 text-sm text-slate-600 dark:text-slate-300">{rate ? `1 ${displaySymbol} = ${formatNumber(rate)} VES` : 'Selecciona una tasa valida para continuar.'}</div>
+            <div className="mt-3 text-sm text-[color:var(--foreground-muted)]">
+              {rate ? `1 ${displaySymbol} = ${formatNumber(rate)} VES` : "Selecciona una tasa valida para continuar."}
+            </div>
 
-            <div className="mt-6 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm dark:border-slate-800 dark:bg-slate-950">
-              <div className="flex items-center justify-between text-slate-500 dark:text-slate-400"><span>Fuente aplicada</span><span className="font-semibold text-slate-900 dark:text-slate-100">{sourceLabels[source]}</span></div>
-              <div className="mt-2 flex items-center justify-between text-slate-500 dark:text-slate-400"><span>Moneda base</span><span className="font-semibold text-slate-900 dark:text-slate-100">{displaySymbol || '—'}</span></div>
-              <div className="mt-2 flex items-center justify-between text-slate-500 dark:text-slate-400"><span>Precision</span><span className="font-semibold text-slate-900 dark:text-slate-100">Hasta 6 decimales</span></div>
+            <div className="mt-6 rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 text-sm">
+              <div className="flex items-center justify-between text-[color:var(--foreground-subtle)]"><span>Fuente aplicada</span><span className="font-semibold text-[color:var(--foreground)]">{sourceLabels[source]}</span></div>
+              <div className="mt-2 flex items-center justify-between text-[color:var(--foreground-subtle)]"><span>Moneda base</span><span className="font-semibold text-[color:var(--foreground)]">{displaySymbol || "-"}</span></div>
+              <div className="mt-2 flex items-center justify-between text-[color:var(--foreground-subtle)]"><span>Precision</span><span className="font-semibold text-[color:var(--foreground)]">Hasta 6 decimales</span></div>
             </div>
           </div>
         </div>
