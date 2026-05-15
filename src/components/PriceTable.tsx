@@ -34,13 +34,13 @@ export default function PriceTable({ rates }: { rates: RateList }) {
   return (
     <div className="flex w-full flex-col items-center">
       <div ref={captureRef} className="w-full max-w-3xl sm:items-start">
-        <h1 className="mb-5 text-center text-5xl font-bold sm:text-left">
+        <h1 className="mb-5 text-center text-5xl font-[var(--font-display)] text-[color:var(--foreground)] sm:text-left">
           Price BCV!
         </h1>
         {rates.list.length ? (
-          <div className="w-full max-w-2xl overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-950">
-            <table className="w-full text-left text-sm text-gray-600 dark:text-gray-300">
-              <thead className="border-b border-gray-200 bg-gray-50/50 text-xs uppercase tracking-wider text-gray-500 dark:border-gray-800 dark:bg-gray-900/50 dark:text-gray-400">
+          <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] shadow-[var(--shadow-soft)]">
+            <table className="w-full text-left text-sm text-[color:var(--foreground-muted)]">
+              <thead className="border-b border-[color:var(--border)] bg-[color:var(--surface-muted)] text-xs uppercase tracking-wider text-[color:var(--foreground-subtle)]">
                 <tr>
                   <th scope="col" className="px-6 py-4 font-medium">
                     Symbol
@@ -50,16 +50,16 @@ export default function PriceTable({ rates }: { rates: RateList }) {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <tbody className="divide-y divide-[color:var(--border)]">
                 {rates.list.map((rate: { symbol: string; price: string }) => (
                   <tr
                     key={rate.symbol}
-                    className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-900/50"
+                    className="transition-colors hover:bg-[color:var(--surface-muted)]"
                   >
-                    <td className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-gray-100">
+                    <td className="whitespace-nowrap px-6 py-4 font-medium text-[color:var(--foreground)]">
                       {rate.symbol}
                     </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-right font-mono tabular-nums text-gray-700 dark:text-gray-300">
+                    <td className="whitespace-nowrap px-6 py-4 text-right font-mono tabular-nums text-[color:var(--foreground-muted)]">
                       {rate.price}
                     </td>
                   </tr>
@@ -68,12 +68,12 @@ export default function PriceTable({ rates }: { rates: RateList }) {
             </table>
           </div>
         ) : (
-          <div className="w-full max-w-2xl rounded-xl border border-gray-200 bg-white p-6 text-sm text-gray-500 shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:text-gray-400">
+          <div className="w-full max-w-2xl rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 text-sm text-[color:var(--foreground-muted)] shadow-[var(--shadow-soft)]">
             No rate data available.
           </div>
         )}
         <BinanceTicker />
-        <span className="mt-6 text-sm text-gray-500">
+        <span className="mt-6 text-sm text-[color:var(--foreground-subtle)]">
           {rates.bcv_date
             ? new Date(rates.bcv_date).toLocaleString()
             : "No date available"}
@@ -81,7 +81,7 @@ export default function PriceTable({ rates }: { rates: RateList }) {
       </div>
       <button
         onClick={shareData}
-        className="mb-6 mt-8 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        className="mb-6 mt-8 rounded-xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-4 py-2 text-sm font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent-strong)] focus:outline-none focus:ring-2 focus:ring-[color:var(--ring)]"
       >
         Share Rates
       </button>

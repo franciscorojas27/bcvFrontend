@@ -38,23 +38,23 @@ export default function BinanceTicker() {
   }, []);
 
   return (
-    <div className="mt-6 w-full max-w-2xl rounded-md border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-      <h2 className="mb-2 text-lg font-medium">Binance</h2>
+    <div className="mt-6 w-full max-w-2xl rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 shadow-[var(--shadow-soft)]">
+      <h2 className="mb-2 text-lg font-medium text-[color:var(--foreground)]">Binance</h2>
       {error ? (
         <div className="text-sm text-red-500">{error}</div>
       ) : (
         <div className="flex items-center justify-between">
           <div className="flex gap-6">
             <div>
-              <div className="text-xs text-gray-500">Buy</div>
-              <div className="font-mono text-lg">{data?.buyPrice ?? "—"}</div>
+              <div className="text-xs text-[color:var(--foreground-subtle)]">Buy</div>
+              <div className="font-mono text-lg text-[color:var(--foreground)]">{data?.buyPrice ?? "—"}</div>
             </div>
             <div>
-              <div className="text-xs text-gray-500">Sell</div>
-              <div className="font-mono text-lg">{data?.sellPrice ?? "—"}</div>
+              <div className="text-xs text-[color:var(--foreground-subtle)]">Sell</div>
+              <div className="font-mono text-lg text-[color:var(--foreground)]">{data?.sellPrice ?? "—"}</div>
             </div>
           </div>
-          <div className="text-xs text-gray-400">{lastUpdated ?? "—"}</div>
+          <div className="text-xs text-[color:var(--foreground-subtle)]">{lastUpdated ?? "—"}</div>
         </div>
       )}
     </div>
