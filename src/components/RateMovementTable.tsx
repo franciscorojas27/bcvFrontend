@@ -55,11 +55,11 @@ export default function RateMovementTable({ reports }: { reports: RateReport[] }
   const [page, setPage] = useState(1);
 
   const rows = useMemo(() => {
-    const sortedReports = [...reports]
+    const chronologicalReports = [...reports]
       .filter((report) => report.list.length > 0)
-      .sort((left, right) => new Date(getReportDate(right)).getTime() - new Date(getReportDate(left)).getTime());
+      .sort((left, right) => new Date(getReportDate(left)).getTime() - new Date(getReportDate(right)).getTime());
 
-    return sortedReports.reduce<MovementRow[]>((accumulator, report, index) => {
+    const movementRows = chronologicalReports.reduce<MovementRow[]>((accumulator, report) => {
       const usd = parseNumber(getRate(report, "USD"));
       const eur = parseNumber(getRate(report, "EUR"));
       const previous = accumulator.at(-1) ?? null;
@@ -76,6 +76,8 @@ export default function RateMovementTable({ reports }: { reports: RateReport[] }
 
       return accumulator;
     }, []);
+
+    return movementRows.reverse();
   }, [reports]);
 
   const totalPages = Math.max(1, Math.ceil(rows.length / rowsPerPage));
@@ -147,11 +149,10 @@ export default function RateMovementTable({ reports }: { reports: RateReport[] }
                         </td>
                         <td className="px-4 py-4 text-right">
                           <span
-                            className={`inline-flex min-w-[6.5rem] justify-center rounded-full border px-3 py-1.5 text-xs font-semibold tabular-nums shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] ${
-                              usdPositive
+                            className={`inline-flex min-w-[6.5rem] justify-center rounded-full border px-3 py-1.5 text-xs font-semibold tabular-nums shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] ${usdPositive
                                 ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-200"
                                 : "border-rose-400/25 bg-rose-400/10 text-rose-200"
-                            }`}
+                              }`}
                           >
                             {formatDelta(item.usdDelta)}
                           </span>
@@ -161,11 +162,10 @@ export default function RateMovementTable({ reports }: { reports: RateReport[] }
                         </td>
                         <td className="px-4 py-4 text-right">
                           <span
-                            className={`inline-flex min-w-[6.5rem] justify-center rounded-full border px-3 py-1.5 text-xs font-semibold tabular-nums shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] ${
-                              eurPositive
+                            className={`inline-flex min-w-[6.5rem] justify-center rounded-full border px-3 py-1.5 text-xs font-semibold tabular-nums shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] ${eurPositive
                                 ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-200"
                                 : "border-rose-400/25 bg-rose-400/10 text-rose-200"
-                            }`}
+                              }`}
                           >
                             {formatDelta(item.eurDelta)}
                           </span>
