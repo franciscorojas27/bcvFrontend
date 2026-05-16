@@ -48,7 +48,6 @@ export default function RateMovementTable({ reports }: { reports: RateReport[] }
     if (!latestReport) return [];
 
     return [...latestReport.list]
-      .filter((item) => item.symbol === "USD" || item.symbol === "EUR")
       .sort((left, right) => getChangeValue(right) - getChangeValue(left));
   }, [reports]);
 
@@ -96,13 +95,13 @@ export default function RateMovementTable({ reports }: { reports: RateReport[] }
               </thead>
               <tbody>
                 {visibleRows.length ? (
-                  visibleRows.map((item) => {
+                  visibleRows.map((item, index) => {
                     const changeValue = parseNumber(item.change_pct);
                     const isPositive = (changeValue ?? 0) >= 0;
 
                     return (
                       <tr
-                        key={item.ID ?? item.symbol}
+                        key={`${item.symbol}-${startIndex + index}`}
                         className="border-t border-white/10 transition-colors hover:bg-white/[0.03]"
                       >
                         <td className="px-4 py-4">
