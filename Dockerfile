@@ -9,7 +9,7 @@ COPY . .
 
 RUN npm run build
 
-RUN npm prune --production
+RUN npm prune --production --legacy-peer-deps
 
 FROM node:22-slim AS runner
 WORKDIR /app
