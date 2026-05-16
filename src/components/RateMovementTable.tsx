@@ -11,7 +11,7 @@ const shortDateFormatter = new Intl.DateTimeFormat("es-VE", {
   timeStyle: "short",
 });
 
-const rowsPerPage = 8;
+const rowsPerPage = 6;
 
 function parseNumber(value: string | number | null | undefined) {
   if (value === null || value === undefined) return null;
@@ -31,7 +31,7 @@ function formatPrice(value: string | number | null | undefined) {
 }
 
 function getReportDate(report: RateReport) {
-  return report.bcv_date || report.fetched_at || report.CreatedAt || report.UpdatedAt || "";
+  return report.fetched_at ?? report.bcv_date ?? report.CreatedAt ?? report.UpdatedAt ?? "";
 }
 
 function getRate(report: RateReport, symbol: string) {
@@ -57,7 +57,7 @@ export default function RateMovementTable({ reports }: { reports: RateReport[] }
   const rows = useMemo(() => {
     const sortedReports = [...reports]
       .filter((report) => report.list.length > 0)
-      .sort((left, right) => new Date(getReportDate(left)).getTime() - new Date(getReportDate(right)).getTime());
+      .sort((left, right) => new Date(getReportDate(right)).getTime() - new Date(getReportDate(left)).getTime());
 
     return sortedReports.reduce<MovementRow[]>((accumulator, report, index) => {
       const usd = parseNumber(getRate(report, "USD"));
@@ -83,7 +83,10 @@ export default function RateMovementTable({ reports }: { reports: RateReport[] }
   const startIndex = (currentPage - 1) * rowsPerPage;
   const visibleRows = rows.slice(startIndex, startIndex + rowsPerPage);
 
-  const latestReport = reports.at(-1) ?? null;
+  const latestReport = ((): RateReport | null => {
+    const sorted = [...reports].filter((r) => r.list.length > 0).sort((a, b) => new Date(getReportDate(b)).getTime() - new Date(getReportDate(a)).getTime());
+    return sorted.at(0) ?? null;
+  })();
 
   return (
     <section className="w-full max-w-5xl overflow-hidden rounded-[2rem] border border-white/10 bg-[color:var(--surface-strong)] shadow-[0_24px_70px_rgba(0,0,0,0.65)] sm:rounded-[2.5rem]">
