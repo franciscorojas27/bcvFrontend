@@ -134,7 +134,7 @@ export default function TradeSignalPanel() {
           </div>
         </div>
       </div>
-
+ 
       <div className="relative grid gap-4 px-4 py-5 sm:px-8 sm:py-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-6">
         <div className="space-y-5">
           {isLoading ? (
