@@ -165,14 +165,14 @@ export default function CurrencyCalculator({
   }
 
   return (
-    <section className="relative flex h-full min-h-0 w-full max-w-5xl flex-col overflow-hidden rounded-none border-0 bg-[linear-gradient(180deg,#0b0b0b_0%,#070707_100%)] p-2 shadow-[var(--shadow-strong)] sm:h-auto sm:max-h-[calc(100dvh-3rem)] sm:rounded-[28px] sm:border sm:border-[color:var(--border)] sm:p-6">
+    <section className="calculator-shell relative flex h-full min-h-0 w-full max-w-5xl flex-col overflow-hidden rounded-none border-0 bg-[linear-gradient(180deg,#0b0b0b_0%,#070707_100%)] p-2 shadow-[var(--shadow-strong)] sm:h-auto sm:max-h-[calc(100dvh-3rem)] sm:rounded-[28px] sm:border sm:border-[color:var(--border)] sm:p-6">
       <div className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent)]" aria-hidden></div>
 
       <div className="flex flex-col gap-1 border-b border-[color:var(--border)] pb-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:pb-4">
         <div className="max-w-xl">
           <p className="text-[10px] font-semibold uppercase tracking-[0.34em] text-[color:var(--foreground-subtle)] sm:text-[11px]">Calculadora</p>
           <h1 className="mt-1 text-[1.05rem] font-semibold tracking-tight text-[color:var(--foreground)] sm:mt-2 sm:text-[28px]">Conversión limpia</h1>
-          <p className="mt-1 hidden text-xs text-[color:var(--foreground-muted)] sm:block sm:text-sm">Fondo negro mate y controles directos.</p>
+          <p className="mt-1 hidden text-xs text-[color:var(--foreground-muted)] sm:block sm:text-sm" data-mobile-hide="true">Fondo negro mate y controles directos.</p>
         </div>
 
         {onClose ? (
@@ -187,12 +187,12 @@ export default function CurrencyCalculator({
         ) : null}
       </div>
 
-      <div className="mt-2 grid min-h-0 gap-2 lg:grid-cols-[minmax(0,1fr)_72px_minmax(0,1fr)] lg:items-stretch sm:mt-5 sm:gap-4">
+      <div className="calculator-grid mt-2 grid min-h-0 gap-2 lg:grid-cols-[minmax(0,1fr)_72px_minmax(0,1fr)] lg:items-stretch sm:mt-5 sm:gap-4">
         <div className="rounded-[18px] border border-[color:var(--border)] bg-[color:var(--surface)] p-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)] sm:rounded-[24px] sm:p-6">
           <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
             <div>
               <p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)] sm:text-[11px]">Desde</p>
-              <p className="mt-0.5 hidden text-[11px] text-[color:var(--foreground-muted)] sm:block sm:mt-1 sm:text-xs">Fuente y monto</p>
+              <p className="mt-0.5 hidden text-[11px] text-[color:var(--foreground-muted)] sm:block sm:mt-1 sm:text-xs" data-mobile-hide="true">Fuente y monto</p>
             </div>
             <select
               value={source}
@@ -205,8 +205,8 @@ export default function CurrencyCalculator({
             </select>
           </div>
 
-          <div className="mt-2 rounded-[16px] border border-[color:var(--border)] bg-[color:var(--surface-strong)] px-2.5 py-2.5 sm:mt-4 sm:rounded-[22px] sm:px-4 sm:py-4">
-            <div className="flex flex-col gap-1.5 sm:flex-row sm:items-end sm:gap-3">
+          <div className="mt-2 rounded-[16px] border border-[color:var(--border)] bg-[color:var(--surface-strong)] px-2 py-2 sm:mt-4 sm:rounded-[22px] sm:px-4 sm:py-4">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:gap-3">
               <input
                 id="from-amount"
                 type="text"
@@ -214,13 +214,13 @@ export default function CurrencyCalculator({
                 value={sourceAmount}
                 placeholder="1,00"
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setSourceAmount(e.target.value)}
-                className="min-w-0 flex-1 border-0 bg-transparent font-[var(--font-display)] text-[1.55rem] leading-none tracking-tight text-[color:var(--foreground)] outline-none placeholder:text-[color:var(--foreground-subtle)] sm:text-4xl"
+                className="min-w-0 flex-1 border-0 bg-transparent font-[var(--font-display)] text-[1.45rem] leading-none tracking-tight text-[color:var(--foreground)] outline-none placeholder:text-[color:var(--foreground-subtle)] sm:text-4xl"
               />
               <select
                 id="from-currency"
                 value={fromCurrency}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => setFromCurrency(e.target.value)}
-                className="min-h-10 w-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-3 text-[10px] font-semibold text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--border-strong)] sm:w-auto sm:text-sm"
+                className="min-h-9 w-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-2.5 text-[10px] font-semibold text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--border-strong)] sm:min-h-11 sm:w-auto sm:px-4 sm:text-sm"
               >
                 {currencyOptions.map((item) => (
                   <option key={item} value={item}>
@@ -231,7 +231,7 @@ export default function CurrencyCalculator({
             </div>
           </div>
 
-          <div className="mt-2 flex flex-wrap gap-2 sm:mt-4">
+          <div className="mt-2 flex flex-wrap gap-2 sm:mt-4" data-mobile-hide="true">
             {quickAmounts.slice(0, 2).map((value) => (
               <button
                 key={value}
@@ -247,9 +247,9 @@ export default function CurrencyCalculator({
 
         <div className="flex items-center justify-center py-0 lg:py-6">
           <button
+            className="calculator-swap flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--surface)] text-[color:var(--foreground-muted)] transition hover:border-[color:var(--border-strong)] hover:text-[color:var(--foreground)] sm:h-14 sm:w-14"
             type="button"
             onClick={swapCurrencies}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--surface)] text-[color:var(--foreground-muted)] transition hover:border-[color:var(--border-strong)] hover:text-[color:var(--foreground)] sm:h-14 sm:w-14"
             aria-label="Intercambiar monedas"
           >
             ⇄
@@ -260,7 +260,7 @@ export default function CurrencyCalculator({
           <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
             <div>
               <p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)] sm:text-[11px]">Hacia</p>
-              <p className="mt-0.5 hidden text-[11px] text-[color:var(--foreground-muted)] sm:block sm:mt-1 sm:text-xs">Salida y detalle</p>
+              <p className="mt-0.5 hidden text-[11px] text-[color:var(--foreground-muted)] sm:block sm:mt-1 sm:text-xs" data-mobile-hide="true">Salida y detalle</p>
             </div>
             <select
               value={toCurrency}
@@ -275,31 +275,31 @@ export default function CurrencyCalculator({
             </select>
           </div>
 
-          <div className="mt-2 rounded-[16px] border border-[color:var(--border)] bg-[linear-gradient(180deg,#111111_0%,#0a0a0a_100%)] px-2.5 py-2.5 sm:mt-4 sm:rounded-[22px] sm:px-4 sm:py-4">
-            <div className="flex flex-col gap-1.5 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
+          <div className="mt-2 rounded-[16px] border border-[color:var(--border)] bg-[linear-gradient(180deg,#111111_0%,#0a0a0a_100%)] px-2 py-2 sm:mt-4 sm:rounded-[22px] sm:px-4 sm:py-4">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
               <div>
-                <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[color:var(--foreground-subtle)] sm:text-[11px] sm:tracking-[0.28em]">Monto convertido</p>
-                <div className="mt-1 break-words font-[var(--font-display)] text-[1.55rem] leading-none text-[color:var(--foreground)] sm:mt-3 sm:text-4xl">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[color:var(--foreground-subtle)] sm:text-[11px] sm:tracking-[0.28em]">Monto convertido</p>
+                <div className="calculator-value mt-0.5 break-words font-[var(--font-display)] text-[1.35rem] leading-none text-[color:var(--foreground)] sm:mt-3 sm:text-4xl">
                   {convertedDisplay || "--"}
                 </div>
               </div>
-              <div className="pb-0 text-left text-[9px] font-semibold uppercase tracking-[0.22em] text-[color:var(--foreground-subtle)] sm:pb-1 sm:text-right sm:text-xs sm:tracking-[0.28em]">
+              <div className="pb-0 text-left text-[9px] font-semibold uppercase tracking-[0.2em] text-[color:var(--foreground-subtle)] sm:pb-1 sm:text-right sm:text-xs sm:tracking-[0.28em]">
                 {currencyLabels[toCurrency] ?? toCurrency}
               </div>
             </div>
           </div>
 
-          <div className="mt-2 flex flex-col gap-1 text-[9px] text-[color:var(--foreground-subtle)] sm:mt-4 sm:flex-row sm:items-center sm:justify-between sm:gap-2 sm:text-xs">
+          <div className="mt-2 hidden flex-col gap-1 text-[9px] text-[color:var(--foreground-subtle)] sm:mt-4 sm:flex-row sm:items-center sm:justify-between sm:gap-2 sm:text-xs" data-mobile-hide="true">
             <span>{exchangeLabel}</span>
             <span>{sourceLabels[source]} · {formatUpdatedAt(rates.bcv_date)}</span>
           </div>
 
           {onClose ? (
-            <div className="mt-3 flex justify-end sm:mt-5">
+            <div className="mt-2 flex justify-end sm:mt-5">
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-full bg-[color:var(--foreground)] px-4 py-1.5 text-[10px] font-semibold text-[color:var(--accent-contrast)] transition hover:bg-[color:var(--accent-strong)] sm:px-5 sm:py-2.5 sm:text-sm"
+                className="rounded-full bg-[color:var(--foreground)] px-3 py-1 text-[9px] font-semibold text-[color:var(--accent-contrast)] transition hover:bg-[color:var(--accent-strong)] sm:px-5 sm:py-2.5 sm:text-sm"
               >
                 Listo
               </button>

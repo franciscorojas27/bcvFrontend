@@ -52,7 +52,7 @@ export default function CalculatorLauncher({
 
       {open ? (
         <div
-          className="fixed inset-0 z-50 flex items-stretch justify-center overflow-hidden bg-black/92 px-0 py-0 sm:items-center sm:px-6 sm:py-6"
+          className="calculator-modal fixed inset-0 z-50 flex items-stretch justify-center overflow-hidden bg-black/92 px-0 py-0 sm:items-center sm:px-6 sm:py-6"
           role="dialog"
           aria-modal="true"
           aria-label="Calculadora de divisas"

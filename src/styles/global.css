@@ -57,6 +57,57 @@ body {
 	}
 }
 
+@media (max-width: 325px) {
+	.calculator-modal {
+		padding: 0;
+	}
+
+	.calculator-shell {
+		padding: 0.35rem;
+		border-radius: 0;
+	}
+
+	.calculator-grid {
+		gap: 0.35rem;
+	}
+
+	.calculator-shell [data-mobile-hide="true"] {
+		display: none;
+	}
+
+	.calculator-shell .calculator-swap {
+		display: none;
+	}
+
+	.calculator-shell h1 {
+		font-size: 0.9rem;
+		line-height: 1.1;
+		margin-top: 0.15rem;
+	}
+
+	.calculator-shell [aria-label="Cerrar calculadora"] {
+		width: 1.5rem;
+		height: 1.5rem;
+	}
+
+	.calculator-shell input,
+	.calculator-shell select {
+		font-size: 0.6rem;
+	}
+
+	.calculator-shell .font-\[var\(--font-display\)\] {
+		font-size: 1.15rem;
+	}
+
+	.calculator-shell .calculator-value {
+		font-size: 1.15rem;
+	}
+
+	.calculator-shell [data-mobile-hide="true"] + div {
+		margin-top: 0;
+	}
+}
+
 ::selection {
 	background-color: var(--accent);
 	color: var(--accent-contrast);
