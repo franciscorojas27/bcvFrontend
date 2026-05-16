@@ -70,11 +70,11 @@ export default function TradeSignalPanel() {
   const confidenceLabel = signal ? `${signal.accuracy_rate}% de precisión` : "Cargando precisión";
 
   return (
-    <section className="relative w-full max-w-5xl overflow-hidden rounded-[2.5rem] border border-white/10 bg-[color:var(--surface)] shadow-[0_24px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl">
+    <section className="relative w-full max-w-5xl overflow-hidden rounded-[2rem] border border-white/10 bg-[color:var(--surface)] shadow-[0_24px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:rounded-[2.5rem]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.05),transparent_30%)]" />
       <div className={`absolute inset-x-0 top-0 h-44 bg-gradient-to-br ${styles.glow}`} />
 
-      <div className="relative border-b border-white/10 px-6 py-6 sm:px-8 sm:py-8">
+      <div className="relative border-b border-white/10 px-4 py-5 sm:px-8 sm:py-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-3">
@@ -88,30 +88,30 @@ export default function TradeSignalPanel() {
             </div>
 
             <div className="max-w-3xl space-y-3">
-              <h2 className="font-[var(--font-display)] text-[2.5rem] leading-[1.02] text-[color:var(--foreground)] sm:text-[3.55rem]">
+              <h2 className="font-[var(--font-display)] text-[clamp(2rem,8vw,3.55rem)] leading-[1.02] text-[color:var(--foreground)]">
                 {styles.label}
               </h2>
-              <p className="max-w-2xl text-base leading-7 text-[color:var(--foreground-muted)] sm:text-lg">
+              <p className="max-w-2xl text-sm leading-7 text-[color:var(--foreground-muted)] sm:text-lg">
                 {guidance}
               </p>
             </div>
           </div>
 
-          <div className="w-full max-w-sm rounded-[1.5rem] border border-white/10 bg-black/25 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
-            <div className="flex items-center justify-between gap-3">
+          <div className="w-full max-w-none rounded-[1.25rem] border border-white/10 bg-black/25 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:max-w-sm sm:rounded-[1.5rem]">
+            <div className="flex items-start justify-between gap-3 sm:items-center">
               <div>
                 <p className="text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-[color:var(--foreground-subtle)]">
                   Decisión
                 </p>
-                <p className="mt-2 text-2xl font-semibold text-[color:var(--foreground)]">
+                <p className="mt-2 text-xl font-semibold text-[color:var(--foreground)] sm:text-2xl">
                   {action}
                 </p>
               </div>
-              <div className={`rounded-[1.1rem] border px-4 py-3 text-right ${styles.chip}`}>
+              <div className={`rounded-[1.1rem] border px-3 py-2 text-right sm:px-4 sm:py-3 ${styles.chip}`}>
                 <div className="text-[0.65rem] font-semibold uppercase tracking-[0.3em] opacity-80">
                   Precisión
                 </div>
-                <div className="mt-1 text-xl font-semibold">{signal ? `${signal.accuracy_rate}%` : "—"}</div>
+                <div className="mt-1 text-lg font-semibold sm:text-xl">{signal ? `${signal.accuracy_rate}%` : "—"}</div>
               </div>
             </div>
 
@@ -135,14 +135,14 @@ export default function TradeSignalPanel() {
         </div>
       </div>
 
-      <div className="relative grid gap-5 px-6 py-6 sm:px-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-6 lg:py-8">
+      <div className="relative grid gap-4 px-4 py-5 sm:px-8 sm:py-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-6">
         <div className="space-y-5">
           {isLoading ? (
-            <div className="rounded-[1.5rem] border border-white/10 bg-black/25 p-6 text-sm text-[color:var(--foreground-muted)]">
+            <div className="rounded-[1.25rem] border border-white/10 bg-black/25 p-5 text-sm text-[color:var(--foreground-muted)] sm:rounded-[1.5rem] sm:p-6">
               Cargando señal de mercado...
             </div>
           ) : error ? (
-            <div className="rounded-[1.5rem] border border-rose-400/30 bg-rose-400/10 p-6 text-sm text-rose-200">
+            <div className="rounded-[1.25rem] border border-rose-400/30 bg-rose-400/10 p-5 text-sm text-rose-200 sm:rounded-[1.5rem] sm:p-6">
               {error}
             </div>
           ) : null}
@@ -155,7 +155,7 @@ export default function TradeSignalPanel() {
                 <Metric label="Actualización" value={updatedLabel} mono={false} />
               </div>
 
-              <div className="rounded-[1.5rem] border border-white/10 bg-black/25 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+              <div className="rounded-[1.25rem] border border-white/10 bg-black/25 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:rounded-[1.5rem] sm:p-6">
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <span className="text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-[color:var(--foreground-subtle)]">
                     Lectura
@@ -165,7 +165,7 @@ export default function TradeSignalPanel() {
                   </span>
                 </div>
 
-                <p className="text-base leading-8 text-[color:var(--foreground-muted)] sm:text-[17px]">
+                <p className="text-sm leading-7 text-[color:var(--foreground-muted)] sm:text-[17px]">
                   {signal.rationale}
                 </p>
               </div>
@@ -175,7 +175,7 @@ export default function TradeSignalPanel() {
 
         <div className="space-y-5">
           {signal ? (
-            <div className="rounded-[1.5rem] border border-white/10 bg-black/25 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+            <div className="rounded-[1.25rem] border border-white/10 bg-black/25 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:rounded-[1.5rem] sm:p-6">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <h3 className="text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-[color:var(--foreground-subtle)]">
                   Factores clave
@@ -190,7 +190,7 @@ export default function TradeSignalPanel() {
                   signal.key_factors.map((factor, index) => (
                     <div
                       key={factor}
-                      className="flex items-start gap-3 rounded-[1.1rem] border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-[color:var(--foreground-muted)]"
+                      className="flex items-start gap-3 rounded-[1rem] border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-[color:var(--foreground-muted)]"
                     >
                       <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[0.68rem] font-semibold text-[color:var(--foreground)]">
                         {String(index + 1).padStart(2, "0")}
@@ -199,7 +199,7 @@ export default function TradeSignalPanel() {
                     </div>
                   ))
                 ) : (
-                  <div className="rounded-[1.1rem] border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-[color:var(--foreground-muted)]">
+                  <div className="rounded-[1rem] border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-[color:var(--foreground-muted)]">
                     No hay factores clave disponibles.
                   </div>
                 )}
@@ -207,7 +207,7 @@ export default function TradeSignalPanel() {
             </div>
           ) : null}
 
-          <div className="rounded-[1.5rem] border border-white/10 bg-black/30 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+          <div className="rounded-[1.25rem] border border-white/10 bg-black/30 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:rounded-[1.5rem] sm:p-6">
             <div className="flex items-center justify-between gap-3">
               <span className="text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-[color:var(--foreground-subtle)]">
                 Estado

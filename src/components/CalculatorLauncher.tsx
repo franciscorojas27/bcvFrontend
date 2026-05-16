@@ -3,8 +3,8 @@ import CurrencyCalculator from "./CurrencyCalculator";
 import type { RateList } from "../types/index.type";
 
 interface BinanceData {
-  buyPrice: string;
-  sellPrice: string;
+  buyPrice: string | number;
+  sellPrice: string | number;
 }
 
 export default function CalculatorLauncher({
@@ -17,6 +17,8 @@ export default function CalculatorLauncher({
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+
     if (!open) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -28,6 +30,12 @@ export default function CalculatorLauncher({
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
+
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
 
   return (
     <>
@@ -43,14 +51,17 @@ export default function CalculatorLauncher({
       </button>
 
       {open ? (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/88 p-4 sm:items-center sm:p-6">
-          <button
-            type="button"
-            className="absolute inset-0 z-0 cursor-default"
-            onClick={() => setOpen(false)}
-            aria-label="Cerrar calculadora"
-          />
-          <div className="relative z-10 w-full max-w-4xl max-h-[calc(100vh-2rem)] overflow-y-auto sm:max-h-[calc(100vh-3rem)]">
+        <div
+          className="fixed inset-0 z-50 flex items-stretch justify-center overflow-hidden bg-black/92 px-0 py-0 sm:items-center sm:px-6 sm:py-6"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Calculadora de divisas"
+          onClick={() => setOpen(false)}
+        >
+          <div
+            className="relative z-10 flex h-full w-full max-w-none overflow-hidden rounded-none sm:h-auto sm:max-w-4xl sm:max-h-[calc(100dvh-3rem)] sm:rounded-[28px]"
+            onClick={(event) => event.stopPropagation()}
+          >
             <CurrencyCalculator rates={rates} binance={binance} onClose={() => setOpen(false)} />
           </div>
         </div>

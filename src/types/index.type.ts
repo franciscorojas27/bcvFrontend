@@ -5,7 +5,7 @@ export interface RateList {
 
 export interface CointRate {
   symbol: string;
-  price: string;
+  price: string | number;
 }
 
 export type TradeSignalAction = "HOLD" | "SELL" | "BUY";

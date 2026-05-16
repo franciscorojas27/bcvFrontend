@@ -34,13 +34,14 @@ export default function PriceTable({ rates }: { rates: RateList }) {
   return (
     <div className="flex w-full flex-col items-center">
       <div ref={captureRef} className="w-full max-w-3xl sm:items-start">
-        <h1 className="mb-5 text-center text-5xl font-[var(--font-display)] text-[color:var(--foreground)] sm:text-left">
+        <h1 className="mb-5 text-center text-4xl font-[var(--font-display)] text-[color:var(--foreground)] sm:text-left sm:text-5xl">
           Precios BCV
         </h1>
         {rates.list.length ? (
           <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] shadow-[var(--shadow-soft)]">
-            <table className="w-full text-left text-sm text-[color:var(--foreground-muted)]">
-              <thead className="border-b border-[color:var(--border)] bg-[color:var(--surface-muted)] text-xs uppercase tracking-wider text-[color:var(--foreground-subtle)]">
+            <div className="overflow-x-auto">
+              <table className="min-w-[320px] w-full text-left text-sm text-[color:var(--foreground-muted)]">
+                <thead className="border-b border-[color:var(--border)] bg-[color:var(--surface-muted)] text-xs uppercase tracking-wider text-[color:var(--foreground-subtle)]">
                 <tr>
                   <th scope="col" className="px-6 py-4 font-medium">
                     Symbol
@@ -49,23 +50,24 @@ export default function PriceTable({ rates }: { rates: RateList }) {
                     Price
                   </th>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-[color:var(--border)]">
-                {rates.list.map((rate: { symbol: string; price: string }) => (
-                  <tr
-                    key={rate.symbol}
-                    className="transition-colors hover:bg-[color:var(--surface-muted)]"
-                  >
-                    <td className="whitespace-nowrap px-6 py-4 font-medium text-[color:var(--foreground)]">
-                      {rate.symbol}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-right font-mono tabular-nums text-[color:var(--foreground-muted)]">
-                      {rate.price}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-[color:var(--border)]">
+                  {rates.list.map((rate: { symbol: string; price: string }) => (
+                    <tr
+                      key={rate.symbol}
+                      className="transition-colors hover:bg-[color:var(--surface-muted)]"
+                    >
+                      <td className="whitespace-nowrap px-6 py-4 font-medium text-[color:var(--foreground)]">
+                        {rate.symbol}
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-right font-mono tabular-nums text-[color:var(--foreground-muted)]">
+                        {rate.price}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         ) : (
           <div className="w-full max-w-2xl rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 text-sm text-[color:var(--foreground-muted)] shadow-[var(--shadow-soft)]">
