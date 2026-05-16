@@ -17,7 +17,10 @@ function parseNumber(value: string | number | null | undefined) {
   if (value === null || value === undefined) return null;
   if (typeof value === "number") return value;
 
-  const normalized = value.trim().replace(/\./g, "").replace(/,/g, ".");
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+
+  const normalized = trimmed.includes(",") ? trimmed.replace(/\./g, "").replace(/,/g, ".") : trimmed;
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : null;
 }
