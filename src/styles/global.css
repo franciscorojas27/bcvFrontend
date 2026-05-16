@@ -41,10 +41,7 @@ body {
 body {
 	position: relative;
 	background-color: var(--background);
-	background-image:
-		radial-gradient(circle at top left, rgba(255, 255, 255, 0.045), transparent 28%),
-		radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.03), transparent 22%),
-		radial-gradient(circle at bottom center, rgba(255, 255, 255, 0.02), transparent 24%);
+	background-image: linear-gradient(180deg, #050505 0%, #030303 100%);
 	background-attachment: fixed;
 	color: var(--foreground);
 	font-family: var(--font-sans);
