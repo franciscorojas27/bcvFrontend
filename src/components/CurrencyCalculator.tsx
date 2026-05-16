@@ -157,7 +157,7 @@ export default function CurrencyCalculator({
   }
 
   return (
-    <section className="relative w-full max-w-4xl overflow-hidden rounded-[28px] border border-[color:var(--border)] bg-[linear-gradient(180deg,#0b0b0b_0%,#070707_100%)] p-5 shadow-[var(--shadow-strong)] sm:p-6">
+    <section className="relative w-full max-w-5xl overflow-hidden rounded-[28px] border border-[color:var(--border)] bg-[linear-gradient(180deg,#0b0b0b_0%,#070707_100%)] p-5 shadow-[var(--shadow-strong)] sm:p-6">
       <div className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent)]" aria-hidden></div>
 
       <div className="flex items-start justify-between gap-4 border-b border-[color:var(--border)] pb-4">
@@ -179,17 +179,17 @@ export default function CurrencyCalculator({
         ) : null}
       </div>
 
-      <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center">
+      <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_72px_minmax(0,1fr)] lg:items-stretch">
         <div className="rounded-[24px] border border-[color:var(--border)] bg-[color:var(--surface)] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)] sm:p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[color:var(--foreground-subtle)]">Desde</p>
-              <p className="mt-1 text-xs text-[color:var(--foreground-muted)]">Selecciona la fuente de tasa</p>
+              <p className="mt-1 text-xs text-[color:var(--foreground-muted)]">Fuente y monto</p>
             </div>
             <select
               value={source}
               onChange={(e: ChangeEvent<HTMLSelectElement>) => setSource(e.target.value as RateSource)}
-              className="rounded-full border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-3 py-2 text-xs font-semibold text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--border-strong)]"
+              className="min-h-11 rounded-full border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-4 text-xs font-semibold text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--border-strong)]"
             >
               <option value="bcv">BCV</option>
               {hasBinance ? <option value="binance-buy">Binance compra</option> : null}
@@ -197,28 +197,30 @@ export default function CurrencyCalculator({
             </select>
           </div>
 
-          <div className="mt-4 flex items-end gap-3">
-            <input
-              id="from-amount"
-              type="text"
-              inputMode="decimal"
-              value={sourceAmount}
-              placeholder="1,00"
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setSourceAmount(e.target.value)}
-              className="min-w-0 flex-1 border-0 bg-transparent font-[var(--font-display)] text-4xl leading-none tracking-tight text-[color:var(--foreground)] outline-none placeholder:text-[color:var(--foreground-subtle)]"
-            />
-            <select
-              id="from-currency"
-              value={fromCurrency}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => setFromCurrency(e.target.value)}
-              className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-3 py-3 text-sm font-semibold text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--border-strong)]"
-            >
-              {currencyOptions.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
+          <div className="mt-4 rounded-[22px] border border-[color:var(--border)] bg-[color:var(--surface-strong)] px-4 py-4">
+            <div className="flex items-end gap-3">
+              <input
+                id="from-amount"
+                type="text"
+                inputMode="decimal"
+                value={sourceAmount}
+                placeholder="1,00"
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setSourceAmount(e.target.value)}
+                className="min-w-0 flex-1 border-0 bg-transparent font-[var(--font-display)] text-4xl leading-none tracking-tight text-[color:var(--foreground)] outline-none placeholder:text-[color:var(--foreground-subtle)]"
+              />
+              <select
+                id="from-currency"
+                value={fromCurrency}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => setFromCurrency(e.target.value)}
+                className="min-h-12 rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-3 text-sm font-semibold text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--border-strong)]"
+              >
+                {currencyOptions.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
@@ -227,7 +229,7 @@ export default function CurrencyCalculator({
                 key={value}
                 type="button"
                 onClick={() => setSourceAmount(value)}
-                className="rounded-full border border-[color:var(--border)] bg-[color:var(--surface-strong)] px-3 py-1.5 text-xs font-semibold text-[color:var(--foreground-muted)] transition hover:border-[color:var(--border-strong)] hover:text-[color:var(--foreground)]"
+                className="min-h-10 rounded-full border border-[color:var(--border)] bg-[color:var(--surface-strong)] px-3 text-xs font-semibold text-[color:var(--foreground-muted)] transition hover:border-[color:var(--border-strong)] hover:text-[color:var(--foreground)]"
               >
                 {value}
               </button>
@@ -235,25 +237,27 @@ export default function CurrencyCalculator({
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={swapCurrencies}
-          className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--surface)] text-[color:var(--foreground-muted)] transition hover:border-[color:var(--border-strong)] hover:text-[color:var(--foreground)] lg:self-center"
-          aria-label="Intercambiar monedas"
-        >
-          ⇄
-        </button>
+        <div className="flex items-center justify-center lg:py-6">
+          <button
+            type="button"
+            onClick={swapCurrencies}
+            className="flex h-14 w-14 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--surface)] text-[color:var(--foreground-muted)] transition hover:border-[color:var(--border-strong)] hover:text-[color:var(--foreground)]"
+            aria-label="Intercambiar monedas"
+          >
+            ⇄
+          </button>
+        </div>
 
         <div className="rounded-[24px] border border-[color:var(--border)] bg-[color:var(--surface)] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)] sm:p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[color:var(--foreground-subtle)]">Hacia</p>
-              <p className="mt-1 text-xs text-[color:var(--foreground-muted)]">Resultado estimado</p>
+              <p className="mt-1 text-xs text-[color:var(--foreground-muted)]">Salida y detalle</p>
             </div>
             <select
               value={toCurrency}
               onChange={(e: ChangeEvent<HTMLSelectElement>) => setToCurrency(e.target.value)}
-              className="rounded-full border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-3 py-2 text-xs font-semibold text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--border-strong)]"
+              className="min-h-11 rounded-full border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-4 text-xs font-semibold text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--border-strong)]"
             >
               {currencyOptions.map((item) => (
                 <option key={item} value={item}>
@@ -263,15 +267,17 @@ export default function CurrencyCalculator({
             </select>
           </div>
 
-          <div className="mt-4 flex min-h-24 items-end justify-between gap-4 rounded-[22px] border border-[color:var(--border)] bg-[linear-gradient(180deg,#111111_0%,#0a0a0a_100%)] px-4 py-4">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">Monto convertido</p>
-              <div className="mt-3 font-[var(--font-display)] text-4xl leading-none text-[color:var(--foreground)]">
-                {convertedDisplay || "--"}
+          <div className="mt-4 rounded-[22px] border border-[color:var(--border)] bg-[linear-gradient(180deg,#111111_0%,#0a0a0a_100%)] px-4 py-4">
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">Monto convertido</p>
+                <div className="mt-3 font-[var(--font-display)] text-4xl leading-none text-[color:var(--foreground)]">
+                  {convertedDisplay || "--"}
+                </div>
               </div>
-            </div>
-            <div className="pb-1 text-right text-xs font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">
-              {currencyLabels[toCurrency] ?? toCurrency}
+              <div className="pb-1 text-right text-xs font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground-subtle)]">
+                {currencyLabels[toCurrency] ?? toCurrency}
+              </div>
             </div>
           </div>
 
