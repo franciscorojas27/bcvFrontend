@@ -115,14 +115,14 @@ export default function TradeSignalPanel() {
               </div>
             </div>
 
-            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
+            <div className="mt-4 h-2.5 overflow-hidden rounded-full border border-white/10 bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
               <div
-                className={`h-full rounded-full bg-gradient-to-r ${
+                className={`relative h-full rounded-full ${
                   action === "BUY"
-                    ? "from-emerald-300 via-emerald-400 to-emerald-500"
+                    ? "bg-emerald-400"
                     : action === "SELL"
-                      ? "from-rose-300 via-rose-400 to-rose-500"
-                      : "from-amber-300 via-amber-400 to-amber-500"
+                      ? "bg-rose-400"
+                      : "bg-amber-400"
                 }`}
                 style={{ width: signal ? `${signal.accuracy_rate}%` : "35%" }}
               />
@@ -220,7 +220,7 @@ export default function TradeSignalPanel() {
             <div className="mt-4 space-y-3 text-sm leading-6 text-[color:var(--foreground-muted)]">
               <p>{guidance}</p>
               <p>
-                Una señal simple, limpia y lista para tomar decisiones sin distracciones.
+                Esto solo es una guía basada en datos históricos y no garantiza resultados futuros. Siempre haz tu propia investigación antes de tomar decisiones de inversión.
               </p>
             </div>
           </div>
