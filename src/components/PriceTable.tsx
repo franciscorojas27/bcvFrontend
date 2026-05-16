@@ -35,7 +35,7 @@ export default function PriceTable({ rates }: { rates: RateList }) {
     <div className="flex w-full flex-col items-center">
       <div ref={captureRef} className="w-full max-w-3xl sm:items-start">
         <h1 className="mb-5 text-center text-5xl font-[var(--font-display)] text-[color:var(--foreground)] sm:text-left">
-          Price BCV!
+          Precios BCV
         </h1>
         {rates.list.length ? (
           <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] shadow-[var(--shadow-soft)]">
@@ -69,7 +69,7 @@ export default function PriceTable({ rates }: { rates: RateList }) {
           </div>
         ) : (
           <div className="w-full max-w-2xl rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 text-sm text-[color:var(--foreground-muted)] shadow-[var(--shadow-soft)]">
-            No rate data available.
+            No hay datos de tasas disponibles.
           </div>
         )}
         <BinanceTicker />
@@ -83,7 +83,7 @@ export default function PriceTable({ rates }: { rates: RateList }) {
         onClick={shareData}
         className="mb-6 mt-8 rounded-xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-4 py-2 text-sm font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent-strong)] focus:outline-none focus:ring-2 focus:ring-[color:var(--ring)]"
       >
-        Share Rates
+        Compartir precios
       </button>
     </div>
   );

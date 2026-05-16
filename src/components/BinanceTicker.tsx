@@ -24,7 +24,7 @@ export default function BinanceTicker() {
         setError(null);
       } catch (err) {
         if (!mounted) return;
-        setError("Error fetching Binance data");
+        setError("Error al obtener los datos de Binance");
       }
     }
 
@@ -46,11 +46,11 @@ export default function BinanceTicker() {
         <div className="flex items-center justify-between">
           <div className="flex gap-6">
             <div>
-              <div className="text-xs text-[color:var(--foreground-subtle)]">Buy</div>
+              <div className="text-xs text-[color:var(--foreground-subtle)]">Compra</div>
               <div className="font-mono text-lg text-[color:var(--foreground)]">{data?.buyPrice ?? "—"}</div>
             </div>
             <div>
-              <div className="text-xs text-[color:var(--foreground-subtle)]">Sell</div>
+              <div className="text-xs text-[color:var(--foreground-subtle)]">Venta</div>
               <div className="font-mono text-lg text-[color:var(--foreground)]">{data?.sellPrice ?? "—"}</div>
             </div>
           </div>

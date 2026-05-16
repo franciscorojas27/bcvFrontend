@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import PriceTable from "../components/PriceTable";
 import CalculatorLauncher from "../components/CalculatorLauncher";
+import TradeSignalPanel from "../components/TradeSignalPanel";
 
 const baseUrl = import.meta.env.BCV_BACKEND_URL;
 let rates = { list: [], bcv_date: "" };
@@ -21,7 +22,10 @@ if (baseUrl) {
 <Layout>
   <div class="relative flex flex-1 items-center justify-center overflow-hidden px-6 py-10 sm:py-14">
     <div class="relative z-10 w-full">
-      <PriceTable rates={rates} client:load />
+      <div class="mx-auto flex w-full max-w-5xl flex-col gap-8">
+        <PriceTable rates={rates} client:load />
+        <TradeSignalPanel client:load />
+      </div>
     </div>
     <CalculatorLauncher rates={rates} binance={binance} client:load />
   </div>

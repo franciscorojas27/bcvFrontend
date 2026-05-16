@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, ChangeEvent } from "react";
+import { useEffect, useMemo, useState, type ChangeEvent } from "react";
 import type { RateList } from "../types/index.type";
 
 type RateSource = "bcv" | "binance-buy" | "binance-sell";
