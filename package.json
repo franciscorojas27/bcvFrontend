@@ -13,7 +13,7 @@
     "@astrojs/react": "5.0.5",
     "@astrojs/ts-plugin": "1.10.8",
     "@tailwindcss/vite": "4.3.0",
-    "@tremor/react": "^3.18.7",
+    "@tremor/react": "3.18.7",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "astro": "6.3.2",
