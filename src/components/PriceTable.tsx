@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { toBlob } from "html-to-image";
 import BinanceTicker from "./BinanceTicker";
 import type { RateList } from "../types/index.type";
+import { formatEsVeDateTime } from "../utils/dateFormat";
 
 export default function PriceTable({ rates }: { rates: RateList }) {
   const captureRef = useRef<HTMLDivElement>(null);
@@ -77,7 +78,7 @@ export default function PriceTable({ rates }: { rates: RateList }) {
         <BinanceTicker />
         <span className="mt-6 text-sm text-[color:var(--foreground-subtle)]">
           {rates.bcv_date
-            ? new Date(rates.bcv_date).toLocaleString()
+            ? formatEsVeDateTime(rates.bcv_date)
             : "No date available"}
         </span>
       </div>

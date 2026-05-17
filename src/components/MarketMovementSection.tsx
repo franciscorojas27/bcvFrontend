@@ -9,6 +9,7 @@ import {
   YAxis,
 } from "recharts";
 import type { RateReport } from "../types/index.type";
+import { formatEsVeCompactDate, formatEsVeDateTime } from "../utils/dateFormat";
 
 type ChartPoint = {
   date: string;
@@ -20,16 +21,6 @@ type ChartPoint = {
 const moneyFormatter = new Intl.NumberFormat("es-VE", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
-});
-
-const compactDateFormatter = new Intl.DateTimeFormat("es-VE", {
-  day: "2-digit",
-  month: "short",
-});
-
-const reportDateFormatter = new Intl.DateTimeFormat("es-VE", {
-  dateStyle: "medium",
-  timeStyle: "short",
 });
 
 const chartAxisStyle = {
@@ -100,8 +91,8 @@ export default function MarketMovementSection({ reports }: { reports: RateReport
   const chartData = useMemo<ChartPoint[]>(() => {
     return sortedReports
       .map((report) => ({
-        label: reportDateFormatter.format(new Date(getReportDate(report))),
-        date: compactDateFormatter.format(new Date(getReportDate(report))),
+        label: formatEsVeDateTime(getReportDate(report)),
+        date: formatEsVeCompactDate(getReportDate(report)),
         USD: parsePrice(getRate(report, "USD")),
         EUR: parsePrice(getRate(report, "EUR")),
       }));
@@ -120,7 +111,7 @@ export default function MarketMovementSection({ reports }: { reports: RateReport
   const eurDelta = eurLatest !== null && eurPrevious !== null ? eurLatest - eurPrevious : null;
 
   const hasChartData = chartData.length > 0;
-  const latestLabel = latestReport ? reportDateFormatter.format(new Date(getReportDate(latestReport))) : "Sin histórico";
+  const latestLabel = latestReport ? formatEsVeDateTime(getReportDate(latestReport)) : "Sin histórico";
 
   const tooltipStyle = {
     background: "rgba(6, 6, 6, 0.96)",

@@ -1,14 +1,10 @@
 import { useMemo, useState } from "react";
 import type { RateReport } from "../types/index.type";
+import { formatEsVeDate, formatEsVeDateTime } from "../utils/dateFormat";
 
 const moneyFormatter = new Intl.NumberFormat("es-VE", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
-});
-
-const shortDateFormatter = new Intl.DateTimeFormat("es-VE", {
-  dateStyle: "medium",
-  timeStyle: "short",
 });
 
 const rowsPerPage = 6;
@@ -67,7 +63,7 @@ export default function RateMovementTable({ reports }: { reports: RateReport[] }
       const previousEur = previous ? previous.eur : null;
 
       accumulator.push({
-        date: shortDateFormatter.format(new Date(getReportDate(report))),
+        date: formatEsVeDateTime(getReportDate(report)),
         usd,
         eur,
         usdDelta: usd !== null && previousUsd !== null ? usd - previousUsd : null,
@@ -108,7 +104,7 @@ export default function RateMovementTable({ reports }: { reports: RateReport[] }
               {rows.length ? `${rows.length} reportes` : "Sin reporte"}
             </div>
             <div className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[color:var(--foreground-muted)]">
-              {latestReport ? new Date(getReportDate(latestReport)).toLocaleDateString("es-VE") : "Sin fecha"}
+              {latestReport ? formatEsVeDate(getReportDate(latestReport)) : "Sin fecha"}
             </div>
           </div>
         </div>

@@ -11,16 +11,19 @@ let rates: RateList = { list: [], bcv_date: "" };
 let rateReports: RateReport[] = [];
 let binance = null;
 
-const [ratesRes, binanceRes] = await Promise.all([
-  fetch(new URL("/rate-list", Astro.url), { cache: "no-store" }),
+const [rateRes, ratesRes, binanceRes] = await Promise.all([
+  fetch(new URL("/api/rates", Astro.url), { cache: "no-store" }),
+  fetch(new URL("/api/rate-list", Astro.url), { cache: "no-store" }),
   fetch(new URL("/api/binance", Astro.url), { cache: "no-store" }),
 ]);
-
+var rate = rateRes.ok ? await rateRes.json() : null;
 const rawRates = ratesRes.ok ? await ratesRes.json() : null;
 if (Array.isArray(rawRates)) {
   rateReports = rawRates as RateReport[];
   const latestReport = rateReports.at(-1);
-  rates = latestReport ? { list: latestReport.list ?? [], bcv_date: latestReport.bcv_date ?? "" } : { list: [], bcv_date: "" };
+  rates = latestReport
+    ? { list: latestReport.list ?? [], bcv_date: latestReport.bcv_date ?? "" }
+    : { list: [], bcv_date: "" };
 } else if (rawRates && typeof rawRates === "object" && "list" in rawRates) {
   rates = rawRates as RateList;
   rateReports = [
@@ -35,10 +38,12 @@ binance = binanceRes.ok ? await binanceRes.json() : null;
 ---
 
 <Layout>
-  <div class="relative flex flex-1 items-center justify-center overflow-hidden px-6 py-10 sm:py-14">
+  <div
+    class="relative flex flex-1 items-center justify-center overflow-hidden px-6 py-10 sm:py-14"
+  >
     <div class="relative z-10 w-full">
       <div class="mx-auto flex w-full max-w-5xl flex-col gap-8">
-        <PriceTable rates={rates} client:load />
+        <PriceTable rates={rate} client:load />
         <TradeSignalPanel client:load />
         <MarketMovementSection reports={rateReports} client:load />
         <RateMovementTable reports={rateReports} client:load />

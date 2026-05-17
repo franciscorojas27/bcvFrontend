@@ -9,7 +9,7 @@ export const GET: APIRoute = async () => {
     );
   }
 
-  const response = await fetch(`${baseUrl}/rate-list`, {
+  const response = await fetch(`${baseUrl}/rates`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
