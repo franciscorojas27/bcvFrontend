@@ -49,6 +49,6 @@ binance = binanceRes.ok ? await binanceRes.json() : null;
         <RateMovementTable reports={rateReports} client:load />
       </div>
     </div>
-    <CalculatorLauncher rates={rates} binance={binance} client:load />
+    <CalculatorLauncher rates={rate} binance={binance} client:load />
   </div>
 </Layout>
