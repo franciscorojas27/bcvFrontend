@@ -40,28 +40,28 @@ export default function PriceTable({ rates }: { rates: RateList }) {
         </h1>
         {rates.list.length ? (
           <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] shadow-[var(--shadow-soft)]">
-            <div className="overflow-x-auto">
-              <table className="min-w-[320px] w-full text-left text-sm text-[color:var(--foreground-muted)]">
+            <div className="overflow-x-auto px-2 sm:px-0">
+              <table className="sm:min-w-[320px] w-full text-left text-sm text-[color:var(--foreground-muted)]">
                 <thead className="border-b border-[color:var(--border)] bg-[color:var(--surface-muted)] text-xs uppercase tracking-wider text-[color:var(--foreground-subtle)]">
-                <tr>
-                  <th scope="col" className="px-6 py-4 font-medium">
-                    Symbol
-                  </th>
-                  <th scope="col" className="px-6 py-4 font-medium text-right">
-                    Price
-                  </th>
-                </tr>
+                  <tr>
+                    <th scope="col" className="px-3 py-2 sm:px-6 sm:py-4 font-medium">
+                      Symbol
+                    </th>
+                    <th scope="col" className="px-3 py-2 sm:px-6 sm:py-4 font-medium text-right">
+                      Price
+                    </th>
+                  </tr>
                 </thead>
                 <tbody className="divide-y divide-[color:var(--border)]">
-                  {rates.list.map((rate: { symbol: string; price: string }) => (
+                  {rates.list.map((rate: { symbol: string; price: string | number }) => (
                     <tr
                       key={rate.symbol}
                       className="transition-colors hover:bg-[color:var(--surface-muted)]"
                     >
-                      <td className="whitespace-nowrap px-6 py-4 font-medium text-[color:var(--foreground)]">
+                      <td className="whitespace-nowrap px-3 py-2 sm:px-6 sm:py-4 font-medium text-[color:var(--foreground)]">
                         {rate.symbol}
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-right font-mono tabular-nums text-[color:var(--foreground-muted)]">
+                      <td className="whitespace-nowrap px-3 py-2 sm:px-6 sm:py-4 text-right font-mono tabular-nums text-[color:var(--foreground-muted)]">
                         {rate.price}
                       </td>
                     </tr>
