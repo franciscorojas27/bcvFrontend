@@ -39,7 +39,7 @@ export default function BinanceTicker() {
 
   return (
     <div className="mt-6 w-full max-w-2xl rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 shadow-[var(--shadow-soft)]">
-      <h2 className="mb-2 text-lg font-medium text-[color:var(--foreground)]">Binance</h2>
+      <h2 className="mb-2 text-lg font-medium text-[color:var(--foreground)]">USDT (Binance)</h2>
       {error ? (
         <div className="text-sm text-red-500">{error}</div>
       ) : (
