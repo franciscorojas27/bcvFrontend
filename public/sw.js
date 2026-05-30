@@ -1,5 +1,5 @@
 const CACHE_NAME = "bcv-v1";
-const PRECACHE_URLS = ["/", "/calculator", "/manifest.webmanifest"];
+const PRECACHE_URLS = ["/", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -58,3 +58,4 @@ self.addEventListener("fetch", (event) => {
     );
   }
 });
+

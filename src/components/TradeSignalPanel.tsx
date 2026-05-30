@@ -1,6 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import type { TradeSignal } from "../types/index.type";
 
+function getBackendUrl() {
+  const envUrl = import.meta.env.PUBLIC_BCV_BACKEND_URL;
+  if (envUrl) return envUrl.replace(/\/$/, "");
+
+  if (typeof window !== "undefined" && window.__BCV_BACKEND_URL__) {
+    return window.__BCV_BACKEND_URL__.replace(/\/$/, "");
+  }
+
+  return "";
+}
+
 const actionStyles: Record<TradeSignal["action"], { chip: string; glow: string; label: string }> = {
   BUY: {
     chip: "border-emerald-400/35 bg-emerald-400/10 text-emerald-200",
@@ -26,10 +37,19 @@ export default function TradeSignalPanel() {
 
   useEffect(() => {
     let mounted = true;
+    const baseUrl = getBackendUrl();
+
+    if (!baseUrl) {
+      setError("Backend no configurado.");
+      setIsLoading(false);
+      return () => {
+        mounted = false;
+      };
+    }
 
     async function fetchSignal() {
       try {
-        const response = await fetch("/api/trade-signal", { cache: "no-store" });
+        const response = await fetch(`${baseUrl}/api/trade-signal`, { cache: "no-store" });
         if (!response.ok) throw new Error("Fetch failed");
 
         const json = (await response.json()) as TradeSignal;

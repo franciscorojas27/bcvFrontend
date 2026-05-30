@@ -3,10 +3,24 @@ export interface RateList {
   bcv_date: string;
 }
 
+export interface BinanceRate {
+  price: string | number;
+  type_value?: string;
+  CreatedAt?: string;
+  UpdatedAt?: string;
+}
+
+export interface RateGap {
+  value?: string | number;
+  value_porcentual?: string | number;
+  binance_rate?: BinanceRate | null;
+}
+
 export interface CointRate {
   symbol: string;
   price: string | number;
   change_pct?: string | number;
+  gap?: RateGap | null;
 }
 
 export interface RateReport {

@@ -1,10 +1,14 @@
 import { useRef } from "react";
 import { toBlob } from "html-to-image";
 import BinanceTicker from "./BinanceTicker";
+import BinanceListStats from "./BinanceListStats";
+import GapCrackPanel from "./GapCrackPanel";
 import type { RateList } from "../types/index.type";
 import { formatEsVeDateTime } from "../utils/dateFormat";
 
-export default function PriceTable({ rates }: { rates: RateList }) {
+export default function PriceTable({ rates }: { rates?: RateList | null }) {
+  const list = Array.isArray(rates?.list) ? rates?.list ?? [] : [];
+  const bcvDate = typeof rates?.bcv_date === "string" ? rates?.bcv_date ?? "" : "";
   const captureRef = useRef<HTMLDivElement>(null);
   const shareData = async () => {
     if (!captureRef.current) return;
@@ -34,12 +38,12 @@ export default function PriceTable({ rates }: { rates: RateList }) {
 
   return (
     <div className="flex w-full flex-col items-center">
-      <div ref={captureRef} className="w-full max-w-3xl sm:items-start">
-        <h1 className="mb-5 text-center text-4xl font-[var(--font-display)] text-[color:var(--foreground)] sm:text-left sm:text-5xl">
+      <div ref={captureRef} className="mx-auto flex w-full max-w-3xl flex-col items-center">
+        <h1 className="mb-5 text-center text-4xl font-[var(--font-display)] text-[color:var(--foreground)] sm:text-5xl">
           Precios BCV
         </h1>
-        {rates.list.length ? (
-          <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] shadow-[var(--shadow-soft)]">
+        {list.length ? (
+          <div className="mx-auto w-full max-w-2xl overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] shadow-[var(--shadow-soft)]">
             <div className="overflow-x-auto px-2 sm:px-0">
               <table className="sm:min-w-[320px] w-full text-left text-sm text-[color:var(--foreground-muted)]">
                 <thead className="border-b border-[color:var(--border)] bg-[color:var(--surface-muted)] text-xs uppercase tracking-wider text-[color:var(--foreground-subtle)]">
@@ -53,7 +57,7 @@ export default function PriceTable({ rates }: { rates: RateList }) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[color:var(--border)]">
-                  {rates.list.map((rate: { symbol: string; price: string | number }) => (
+                  {list.map((rate: { symbol: string; price: string | number }) => (
                     <tr
                       key={rate.symbol}
                       className="transition-colors hover:bg-[color:var(--surface-muted)]"
@@ -71,14 +75,14 @@ export default function PriceTable({ rates }: { rates: RateList }) {
             </div>
           </div>
         ) : (
-          <div className="w-full max-w-2xl rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 text-sm text-[color:var(--foreground-muted)] shadow-[var(--shadow-soft)]">
+          <div className="mx-auto w-full max-w-2xl rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 text-sm text-[color:var(--foreground-muted)] shadow-[var(--shadow-soft)]">
             No hay datos de tasas disponibles.
           </div>
         )}
         <BinanceTicker />
         <span className="mt-6 text-sm text-[color:var(--foreground-subtle)]">
-          {rates.bcv_date
-            ? formatEsVeDateTime(rates.bcv_date)
+          {bcvDate
+            ? formatEsVeDateTime(bcvDate)
             : "No date available"}
         </span>
       </div>
@@ -88,6 +92,8 @@ export default function PriceTable({ rates }: { rates: RateList }) {
       >
         Compartir precios
       </button>
+      <GapCrackPanel rates={rates} />
+      <BinanceListStats />
     </div>
   );
 }

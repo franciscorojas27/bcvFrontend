@@ -27,7 +27,7 @@ function formatPrice(value: string | number | null | undefined) {
 }
 
 function getReportDate(report: RateReport) {
-  return report.fetched_at ?? report.bcv_date ?? report.CreatedAt ?? report.UpdatedAt ?? "";
+  return report.bcv_date ?? report.fetched_at ?? report.CreatedAt ?? report.UpdatedAt ?? "";
 }
 
 function getRate(report: RateReport, symbol: string) {

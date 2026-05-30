@@ -4,20 +4,33 @@ import PriceTable from "../components/PriceTable";
 import CalculatorLauncher from "../components/CalculatorLauncher";
 import MarketMovementSection from "../components/MarketMovementSection";
 import RateMovementTable from "../components/RateMovementTable";
-import TradeSignalPanel from "../components/TradeSignalPanel";
+import BinanceMovementSection from "../components/BinanceMovementSection";
+import NewsTicker from "../components/NewsTicker";
 import type { RateList, RateReport } from "../types/index.type";
 
 let rates: RateList = { list: [], bcv_date: "" };
 let rateReports: RateReport[] = [];
 let binance = null;
 
-const [rateRes, ratesRes, binanceRes] = await Promise.all([
-  fetch(new URL("/api/rates", Astro.url), { cache: "no-store" }),
-  fetch(new URL("/api/rate-list", Astro.url), { cache: "no-store" }),
-  fetch(new URL("/api/binance", Astro.url), { cache: "no-store" }),
-]);
-var rate = rateRes.ok ? await rateRes.json() : null;
-const rawRates = ratesRes.ok ? await ratesRes.json() : null;
+const baseUrl = import.meta.env.BCV_BACKEND_URL ?? import.meta.env.PUBLIC_BCV_BACKEND_URL;
+const normalizedBaseUrl = baseUrl ? baseUrl.replace(/\/$/, "") : "";
+
+const [rateRes, ratesRes, binanceRes] = normalizedBaseUrl
+  ? await Promise.all([
+      fetch(`${normalizedBaseUrl}/api/rates`, { cache: "no-store" }),
+      fetch(`${normalizedBaseUrl}/api/rate-list`, { cache: "no-store" }),
+      fetch(`${normalizedBaseUrl}/api/binance`, { cache: "no-store" }),
+    ])
+  : [null, null, null];
+var rate = rateRes?.ok ? await rateRes.json() : null;
+const safeRate: RateList =
+  rate && typeof rate === "object" && "list" in rate && Array.isArray(rate.list)
+    ? {
+        list: (rate as RateList).list ?? [],
+        bcv_date: (rate as RateList).bcv_date ?? "",
+      }
+    : { list: [], bcv_date: "" };
+const rawRates = ratesRes?.ok ? await ratesRes.json() : null;
 if (Array.isArray(rawRates)) {
   rateReports = rawRates as RateReport[];
   const latestReport = rateReports.at(-1);
@@ -34,7 +47,7 @@ if (Array.isArray(rawRates)) {
   ];
 }
 
-binance = binanceRes.ok ? await binanceRes.json() : null;
+binance = binanceRes?.ok ? await binanceRes.json() : null;
 ---
 
 <Layout>
@@ -43,12 +56,13 @@ binance = binanceRes.ok ? await binanceRes.json() : null;
   >
     <div class="relative z-10 w-full">
       <div class="mx-auto flex w-full max-w-5xl flex-col gap-8">
-        <PriceTable rates={rate} client:load />
-        <TradeSignalPanel client:load />
+        <PriceTable rates={safeRate} client:load />
+        <NewsTicker client:load />
         <MarketMovementSection reports={rateReports} client:load />
+        <BinanceMovementSection client:load />
         <RateMovementTable reports={rateReports} client:load />
       </div>
     </div>
-    <CalculatorLauncher rates={rate} binance={binance} client:load />
+    <CalculatorLauncher rates={safeRate} binance={binance} client:load />
   </div>
 </Layout>
